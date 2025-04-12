@@ -93,7 +93,7 @@ Simulate file storage techniques:
 
 1. **Clone the Repository**
 
-git clone https://github.com/your-username/os_visualiser
+git clone https://github.com/himanshusinghpatel998/os_visualiser
 
 
 cd os-visualiser
