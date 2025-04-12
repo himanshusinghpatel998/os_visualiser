@@ -102,6 +102,8 @@ Run the Visualiser
 -Explore
 -Choose a module from the main dashboard and begin exploring!
 
+---
+
 ## 🛠️ Tech Stack
 --Area	Technologies
 --Frontend	HTML5, CSS3, JavaScript
@@ -112,12 +114,13 @@ Run the Visualiser
 
 
 
+---
 
 
 ## Project Goals
 
 
---Visualize OS concepts clearly and interactively
+Visualize OS concepts clearly and interactively
 --Encourage learning by doing
 --Build modular and extensible code
 --Support collaborative contributions
