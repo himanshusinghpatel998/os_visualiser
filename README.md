@@ -15,8 +15,9 @@
 
 ## 📚 Modules Covered
 
-### 🔧 System Calls
-- Analyze and execute different types of system calls.
+### 🧩 System Calls
+- Analyze and execute system calls like `fork()`, `exec()`, `wait()`, etc.
+- Visual flow of process creation and execution.
 
 ---
 
@@ -37,10 +38,9 @@ Implement synchronization problems using semaphores:
 
 ---
 
-### 🔐 Deadlock Handling
-Visualize deadlock avoidance and detection:
-- Banker's Algorithm
-- Deadlock Detection Algorithm
+### 🚦 Deadlock Handling
+- **Avoidance:** Banker's Algorithm
+- **Detection:** Deadlock Detection Algorithm
 
 ---
 
@@ -70,8 +70,8 @@ Simulate how memory pages are replaced:
 
 ### 💽 Disk Scheduling Algorithms
 Understand disk head movement and I/O performance:
-- FCFS
-- SCAN
+- FCFS (First Come First Serve)
+- SCAN (Elevator Algorithm)
 - SSTF (Shortest Seek Time First)
 
 ---
@@ -117,15 +117,15 @@ Choose a module from the main dashboard and begin exploring!
 ## 🛠️ Tech Stack
 Area	Technologies
 
-Frontend	 :   HTML5, CSS3, JavaScript
+**Frontend :**   HTML5, CSS3, JavaScript
 
-Animations  :	  D3.js / Canvas / SVG
+**Animations :**	  D3.js / Canvas / SVG
 
-Deployment  :	GitHub Pages / Netlify
+**Deployment :**	GitHub Pages / Netlify
 
-Versioning	:  Git
+**Versioning:**  Git
 
-language  :  python,c,cc++
+**language :**  python,c,cc++
 
 
 
@@ -142,3 +142,7 @@ Encourage learning by doing
 Build modular and extensible code
 
 Support collaborative contributions
+
+
+
+---
