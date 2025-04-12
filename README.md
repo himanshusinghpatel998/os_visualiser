@@ -94,23 +94,38 @@ Simulate file storage techniques:
 1. **Clone the Repository**
 
 git clone https://github.com/your-username/os-visualiser.git
+
+
 cd os-visualiser
+
+
 Run the Visualiser
 
--Open index.html in your browser
--Or deploy it using GitHub Pages or Netlify
--Explore
--Choose a module from the main dashboard and begin exploring!
+Open index.html in your browser
+
+
+Or deploy it using GitHub Pages or Netlify
+
+
+Explore
+
+
+Choose a module from the main dashboard and begin exploring!
 
 ---
 
 ## 🛠️ Tech Stack
---Area	Technologies
---Frontend	HTML5, CSS3, JavaScript
---Animations	D3.js / Canvas / SVG
---Deployment	GitHub Pages / Netlify
---Versioning	Git
---language    python,c,cc++
+Area	Technologies
+
+Frontend	 :   HTML5, CSS3, JavaScript
+
+Animations  :	  D3.js / Canvas / SVG
+
+Deployment  :	GitHub Pages / Netlify
+
+Versioning	:  Git
+
+language  :  python,c,cc++
 
 
 
@@ -121,6 +136,9 @@ Run the Visualiser
 
 
 Visualize OS concepts clearly and interactively
---Encourage learning by doing
---Build modular and extensible code
---Support collaborative contributions
+
+Encourage learning by doing
+
+Build modular and extensible code
+
+Support collaborative contributions
