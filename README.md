@@ -97,41 +97,18 @@ git clone https://github.com/your-username/os-visualiser.git
 cd os-visualiser
 Run the Visualiser
 
-Open index.html in your browser
-Or deploy it using GitHub Pages or Netlify
-Explore
-Choose a module from the main dashboard and begin exploring!
+-Open index.html in your browser
+-Or deploy it using GitHub Pages or Netlify
+-Explore
+-Choose a module from the main dashboard and begin exploring!
 
 ## 🛠️ Tech Stack
-Area	Technologies
-Frontend	HTML5, CSS3, JavaScript
-Animations	D3.js / Canvas / SVG
-Deployment	GitHub Pages / Netlify
-Versioning	Git
-language    python,c,cc++
-
-
-##📁 Folder Structure
-ruby
-Copy
-Edit
-os-visualiser/
-│
-├── index.html                 # Landing page/dashboard
-├── styles/                    # Common styles
-├── scripts/                   # Common JavaScript utilities
-├── assets/                    # Images/icons/banners
-│
-├── module-01-system-calls/
-├── module-02-cpu-scheduling/
-├── module-03-process-sync/
-├── module-04-deadlock/
-├── module-05-memory-mgmt/
-├── module-06-contig-mem-alloc/
-├── module-07-page-replacement/
-├── module-08-disk-scheduling/
-├── module-09-file-allocation/
-└── module-10-directory-structure/
+--Area	Technologies
+--Frontend	HTML5, CSS3, JavaScript
+--Animations	D3.js / Canvas / SVG
+--Deployment	GitHub Pages / Netlify
+--Versioning	Git
+--language    python,c,cc++
 
 
 
@@ -140,7 +117,7 @@ os-visualiser/
 ## Project Goals
 
 
-Visualize OS concepts clearly and interactively
-Encourage learning by doing
-Build modular and extensible code
-Support collaborative contributions
+--Visualize OS concepts clearly and interactively
+--Encourage learning by doing
+--Build modular and extensible code
+--Support collaborative contributions
