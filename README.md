@@ -1,120 +1,129 @@
 # 🖥️ OS Visualiser
-OS Visualizer is an interactive tool that simulates core Operating System concepts and algorithms. Designed with students and educators in mind, it brings textbook theories to life through visualizations that help you understand, experiment, and explore how an operating system works behind the scenes.
 
+**OS Visualiser** is an interactive educational tool designed to simulate and visualize core **Operating System concepts and algorithms**. Whether you're a student, educator, or OS enthusiast, this project helps bring textbook theories to life through hands-on visualizations.
 
-📚 Modules Covered
-    Module 1 – System Calls
-🔧 Analyze and execute different types of system calls.
+---
 
+##  Features
 
- Module 2 – CPU Scheduling Algorithms
-🌀 Simulate non-preemptive scheduling to calculate turnaround time and waiting time:
+- 💡 Concept-based modular structure
+- 🖱️ Interactive and intuitive visual simulations
+- 🛠️ Beginner-friendly implementation
+- 📦 Clean and scalable folder organization
 
-FCFS
+---
 
-SJF
+## 📚 Modules Covered
 
-Round Robin (Preemptive)
+### 🔧 System Calls
+- Analyze and execute different types of system calls.
 
-Priority
+---
 
+### 🌀 CPU Scheduling Algorithms
+Simulate non-preemptive and preemptive algorithms to calculate turnaround time and waiting time:
+- FCFS (First Come First Serve)
+- SJF (Shortest Job First)
+- Round Robin (Preemptive)
+- Priority Scheduling
 
- Module 3 – Process Synchronization
-🤝 Simulate the following synchronization problems:
+---
 
-Producer-Consumer using Semaphores
+### 🤝 Process Synchronization
+Implement synchronization problems using semaphores:
+- Producer-Consumer Problem
+- Readers-Writers Problem
+- Dining Philosophers Problem
 
-Readers-Writers Problem
+---
 
-Dining Philosophers Problem
+### 🔐 Deadlock Handling
+Visualize deadlock avoidance and detection:
+- Banker's Algorithm
+- Deadlock Detection Algorithm
 
+---
 
+### 📦 Memory Management
+- MVT (Multiple Variable Tasks)
+- MFT (Multiple Fixed Tasks)
 
- Module 4 – Deadlock Handling
-🔐 Deadlock Avoidance and Detection:
+---
 
-Banker's Algorithm
+### 📏 Contiguous Memory Allocation
+Simulate allocation techniques:
+- Worst Fit
+- Best Fit
+- First Fit
+- Next Fit
 
-Deadlock Detection Algorithm
+---
 
+### 🧠 Page Replacement Algorithms
+Simulate how memory pages are replaced:
+- FIFO (First In First Out)
+- Optimal Replacement
+- LRU (Least Recently Used)
+- LFU (Least Frequently Used)
 
- Module 5 – Memory Management
-📦 Simulate:
+---
 
-MVT (Multiple Variable Tasks)
+### 💽 Disk Scheduling Algorithms
+Understand disk head movement and I/O performance:
+- FCFS
+- SCAN
+- SSTF (Shortest Seek Time First)
 
-MFT (Multiple Fixed Tasks)
+---
 
+### 🗃️ File Allocation Strategies
+Simulate file storage techniques:
+- Sequential Allocation
+- Indexed Allocation
+- Linked Allocation
 
-Module 6 – Contiguous Memory Allocation
-📏 Simulate the following techniques:
+---
 
-Worst Fit
+### 📁 Directory Structures
+- Single-Level Directory Organization
 
-Best Fit
+---
 
-First Fit
+##  How to Use
 
-Next Fit
+1. **Clone the Repository**
 
+git clone https://github.com/your-username/os-visualiser.git
+cd os-visualiser
+Run the Visualiser
 
- Module 7 – Page Replacement Algorithms
-🧠 Simulate page replacement strategies:
+Open index.html in your browser
 
-FIFO
+Or deploy it using GitHub Pages or Netlify
 
-Optimal
+Explore
 
-LRU
-
-LFU
-
-
- Module 8 – Disk Scheduling Algorithms
-💽 Simulate:
-
-FCFS
-
-SCAN
-
-SSTF
-
-
- Module 9 – File Allocation Strategies
-🗃️ Simulate the following strategies:
-
-Sequential
-
-Indexed
-
-Linked
-
-
- Module 10 – Directory Structures
-📁 Simulate:
-Single Level Directory Organization
-
-
-How to Use
-Clone the repo:   git clone https://github.com/your-username/os-visualizer.git
-Open index.html in your browser or deploy using GitHub Pages.
-
-Choose a module and explore its simulation interactively.
-
+Choose a module from the main dashboard and begin exploring!
 
 🛠️ Tech Stack
-Frontend: HTML5, CSS3, JavaScript (Vanilla or optionally React.js)
-Animations: D3.js / Canvas / SVG (for interactive visuals)
-Deployment: GitHub Pages / Netlify
+Area	Technologies
+Frontend	HTML5, CSS3, JavaScript
+Animations	D3.js / Canvas / SVG
+Deployment	GitHub Pages / Netlify
+Versioning	Git
+language    python,c,cc++
 
 
-Git for version control
-
-📁 Structure
-bash
+📁 Folder Structure
+ruby
 Copy
 Edit
 os-visualiser/
+│
+├── index.html                 # Landing page/dashboard
+├── styles/                    # Common styles
+├── scripts/                   # Common JavaScript utilities
+├── assets/                    # Images/icons/banners
 │
 ├── module-01-system-calls/
 ├── module-02-cpu-scheduling/
@@ -128,8 +137,11 @@ os-visualiser/
 └── module-10-directory-structure/
 
 
-🎯 Goals
-Interactive simulations
-Easy-to-understand logic
-Beginner-friendly code
-Clean modular structure
+Project Goals
+Visualize OS concepts clearly and interactively
+
+Encourage learning by doing
+
+Build modular and extensible code
+
+Support collaborative contributions
