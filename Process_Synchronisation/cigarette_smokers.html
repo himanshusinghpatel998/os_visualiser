@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cigarette Smokers Problem Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4a55af;
+            --primary-dark: #3700b3;
+            --primary-light: #f1eff4;
+            --background-color: #f0f7f4;;
+            --surface: #1e1e1e;
+            --error: #cf6679;
+            --on-primary: #ffffff;
+            --on-background: #ffffff;
+            --on-surface: #ffffff;
+            --on-error: #000000;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background);
+            color: var(--on-background);
+            line-height: 1.6;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .main-content {
+            display: flex;
+            gap: 1rem;
+            flex: 1;
+        }
+        
+        .simulation-area {
+            display: flex;
+            flex-direction: column;
+            flex: 2;
+            gap: 1rem;
+        }
+        
+        .smokers-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .smoker-card {
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .smoker-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-light);
+            font-size: 1.1rem;
+        }
+        
+        .smoker-card p {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .agent-card {
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .table-area {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .table-items {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .item {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .log-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 300px;
+            max-width: 400px;
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .logs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .logs {
+            flex: 1;
+            overflow-y: auto;
+            height: 100%;
+            background-color: #2d2d2d;
+            border-radius: 4px;
+            padding: 0.5rem;
+        }
+        
+        .log-entry {
+            margin-bottom: 0.3rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid #333;
+            font-size: 0.9rem;
+        }
+        
+        .active {
+            border: 2px solid var(--primary-light);
+        }
+        
+        .smoking {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(187, 134, 252, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(187, 134, 252, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(187, 134, 252, 0); }
+        }
+        
+        /* Custom scrollbar */
+        .logs::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .logs::-webkit-scrollbar-track {
+            background: #2d2d2d;
+            border-radius: 4px;
+        }
+        
+        .logs::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        .logs::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .log-container {
+                max-width: 100%;
+            }
+            
+            .smokers-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            header {
+                padding: 0.8rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Cigarette Smokers Problem</h1>
+        <p>A classic OS synchronization problem</p>
+    </header>
+    <div class="container">
+        <div class="main-content">
+            <div class="simulation-area">
+                <div class="smokers-row">
+                    <div class="smoker-card" id="smoker1">
+                        <h3>Smoker 1</h3>
+                        <p>Infinite supply of <strong>Tobacco</strong></p>
+                        <p class="status">Status: Waiting</p>
+                    </div>
+                    
+                    <div class="smoker-card" id="smoker2">
+                        <h3>Smoker 2</h3>
+                        <p>Infinite supply of <strong>Paper</strong></p>
+                        <p class="status">Status: Waiting</p>
+                    </div>
+                    
+                    <div class="smoker-card" id="smoker3">
+                        <h3>Smoker 3</h3>
+                        <p>Infinite supply of <strong>Matches</strong></p>
+                        <p class="status">Status: Waiting</p>
+                    </div>
+                </div>
+                
+                <div class="agent-card">
+                    <h3>Agent</h3>
+                    <p id="agent-action">Action: Ready to place items</p>
+                </div>
+                
+                <div class="table-area">
+                    <h3>Table</h3>
+                    <p>Current items:</p>
+                    <div class="table-items" id="table-items">
+                        <div class="item" id="item1"></div>
+                        <div class="item" id="item2"></div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="next-btn">Next</button>
+                    <button id="auto-btn">Auto Run</button>
+                    <button id="reset-btn">Reset</button>
+                </div>
+            </div>
+            
+            <div class="log-container">
+                <div class="logs-header">
+                    <h3>Event Log</h3>
+                    <button id="clear-logs">Clear</button>
+                </div>
+                <div class="logs" id="logs">
+                    <div id="log-entries"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // DOM elements
+        const smoker1 = document.getElementById('smoker1');
+        const smoker2 = document.getElementById('smoker2');
+        const smoker3 = document.getElementById('smoker3');
+        const agentAction = document.getElementById('agent-action');
+        const tableItems = document.getElementById('table-items');
+        const item1 = document.getElementById('item1');
+        const item2 = document.getElementById('item2');
+        const nextBtn = document.getElementById('next-btn');
+        const autoBtn = document.getElementById('auto-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const clearLogsBtn = document.getElementById('clear-logs');
+        const logEntries = document.getElementById('log-entries');
+        
+        // State variables
+        let isAutoRunning = false;
+        let autoInterval;
+        let currentSmoker = null;
+        
+        // Ingredients
+        const ingredients = {
+            1: 'Tobacco',
+            2: 'Paper',
+            3: 'Matches'
+        };
+        
+        // Add log entry
+        function addLog(message) {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = message;
+            logEntries.appendChild(entry);
+            logEntries.scrollTop = logEntries.scrollHeight;
+        }
+        
+        // Clear all logs
+        function clearLogs() {
+            logEntries.innerHTML = '';
+        }
+        
+        // Reset all smokers to waiting state
+        function resetSmokers() {
+            [smoker1, smoker2, smoker3].forEach(smoker => {
+                smoker.classList.remove('active', 'smoking');
+                smoker.querySelector('.status').textContent = 'Status: Waiting';
+            });
+            currentSmoker = null;
+        }
+        
+        // Simulate one step
+        function simulate() {
+            resetSmokers();
+            
+            // Generate two different random ingredients
+            let g1, g2;
+            do {
+                g1 = Math.floor(Math.random() * 3) + 1;
+                g2 = Math.floor(Math.random() * 3) + 1;
+            } while (g1 === g2);
+            
+            // Update table items
+            item1.textContent = ingredients[g1];
+            item2.textContent = ingredients[g2];
+            item1.style.display = 'block';
+            item2.style.display = 'block';
+            
+            // Determine which smoker can smoke
+            let smoker;
+            let combination;
+            
+            if ((g1 === 1 && g2 === 2) || (g1 === 2 && g2 === 1)) {
+                // Tobacco + Paper → Smoker with Matches (Smoker 3)
+                smoker = smoker3;
+                combination = 'Tobacco and Paper';
+            } else if ((g1 === 2 && g2 === 3) || (g1 === 3 && g2 === 2)) {
+                // Paper + Matches → Smoker with Tobacco (Smoker 1)
+                smoker = smoker1;
+                combination = 'Paper and Matches';
+            } else {
+                // Tobacco + Matches → Smoker with Paper (Smoker 2)
+                smoker = smoker2;
+                combination = 'Tobacco and Matches';
+            }
+            
+            // Update UI
+            agentAction.textContent = `Action: Placed ${combination} on table`;
+            smoker.classList.add('active');
+            smoker.querySelector('.status').textContent = 'Status: Smoking';
+            currentSmoker = smoker;
+            
+            // Add to log
+            addLog(`Agent placed ${combination} on the table.`);
+            addLog(`${smoker.querySelector('h3').textContent} is smoking (has the missing ingredient).`);
+            
+            // After a delay, show smoking animation
+            setTimeout(() => {
+                if (currentSmoker === smoker) {
+                    smoker.classList.add('smoking');
+                }
+            }, 500);
+            
+            // After smoking is done
+            setTimeout(() => {
+                if (currentSmoker === smoker) {
+                    smoker.classList.remove('smoking');
+                    item1.style.display = 'none';
+                    item2.style.display = 'none';
+                    addLog(`${smoker.querySelector('h3').textContent} finished smoking.`);
+                }
+            }, 2500);
+        }
+        
+        // Event listeners
+        nextBtn.addEventListener('click', () => {
+            if (isAutoRunning) return;
+            simulate();
+        });
+        
+        autoBtn.addEventListener('click', () => {
+            if (isAutoRunning) {
+                clearInterval(autoInterval);
+                autoBtn.textContent = 'Auto Run';
+                isAutoRunning = false;
+            } else {
+                autoBtn.textContent = 'Stop';
+                isAutoRunning = true;
+                simulate(); // Run immediately
+                autoInterval = setInterval(simulate, 3500); // Then every 3.5 seconds
+            }
+        });
+        
+        resetBtn.addEventListener('click', () => {
+            clearInterval(autoInterval);
+            isAutoRunning = false;
+            autoBtn.textContent = 'Auto Run';
+            resetSmokers();
+            item1.style.display = 'none';
+            item2.style.display = 'none';
+            agentAction.textContent = 'Action: Ready to place items';
+        });
+        
+        clearLogsBtn.addEventListener('click', clearLogs);
+        
+        // Initial log
+        addLog('Simulation ready. Click "Next" to begin.');
+    </script>
+</body>
+</html>
