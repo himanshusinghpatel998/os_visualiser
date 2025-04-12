@@ -98,14 +98,11 @@ cd os-visualiser
 Run the Visualiser
 
 Open index.html in your browser
-
 Or deploy it using GitHub Pages or Netlify
-
 Explore
-
 Choose a module from the main dashboard and begin exploring!
 
-🛠️ Tech Stack
+## 🛠️ Tech Stack
 Area	Technologies
 Frontend	HTML5, CSS3, JavaScript
 Animations	D3.js / Canvas / SVG
@@ -114,7 +111,7 @@ Versioning	Git
 language    python,c,cc++
 
 
-📁 Folder Structure
+##📁 Folder Structure
 ruby
 Copy
 Edit
@@ -137,11 +134,13 @@ os-visualiser/
 └── module-10-directory-structure/
 
 
-Project Goals
+
+
+
+## Project Goals
+
+
 Visualize OS concepts clearly and interactively
-
 Encourage learning by doing
-
 Build modular and extensible code
-
 Support collaborative contributions
