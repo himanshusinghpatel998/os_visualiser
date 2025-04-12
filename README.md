@@ -25,8 +25,10 @@
 Simulate non-preemptive and preemptive algorithms to calculate turnaround time and waiting time:
 - FCFS (First Come First Serve)
 - SJF (Shortest Job First)
+- SRTF (Shortest remaining tinr first)
 - Round Robin (Preemptive)
-- Priority Scheduling
+- Priority Scheduling(Preemptive)
+- Priority Scheduling (Non Preemptive)
 
 ---
 
