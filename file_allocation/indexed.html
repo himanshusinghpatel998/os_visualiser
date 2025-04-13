@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indexed Allocation</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Indexed Allocation</h1>
+    <a href="index.html"><button class="back-button">Back to Home</button></a>
+
+    <!-- Theory Section -->
+    <div class="section theory">
+      <h2>Theory</h2>
+      <p>
+        In Indexed Allocation, each file is assigned an index block that contains pointers to the actual data blocks.
+        This lets files be stored in non-contiguous blocks while still enabling random access.
+      </p>
+      <h3>How It Works</h3>
+      <p>
+        Each file gets a dedicated index block. The index block holds a list of pointers that refer to the disk blocks used to store the file’s data.
+        Modern systems often extend this concept with multi-level indexing (using inodes) to handle very large files.
+      </p>
+      <h3>Additional Details</h3>
+      <p>
+        Direct pointers in the index allow fast access for small files, while indirect pointers support scalability for larger files.
+      </p>
+      <h3>Advantages</h3>
+      <ul>
+        <li>No fragmentation: Files need not be contiguous.</li>
+        <li>Random access: Quick lookup through the index block.</li>
+      </ul>
+      <h3>Disadvantages</h3>
+      <ul>
+        <li>Index overhead: Requires one extra block per file.</li>
+        <li>Limited by index size: Maximum file size depends on the number of pointers in the index block.</li>
+      </ul>
+    </div>
+
+    <!-- Pre-filled Blocks Input Section -->
+    <div class="section input-section">
+      <h3>Enter Pre-filled Blocks</h3>
+      <input type="text" id="preFilledBlocks" placeholder="Enter pre-filled blocks (e.g., 2, 4, 6)" />
+      <button onclick="updatePreFilledInput()">Update Pre-filled Blocks</button>
+    </div>
+
+    <!-- Simulator Section -->
+    <div class="section simulator">
+      <h3>Simulator</h3>
+      <form id="fileForm">
+        <input type="text" id="filename" placeholder="File Name" required />
+        <input type="number" id="filesize" placeholder="File Size (in data blocks)" required />
+        <button type="submit">Allocate File</button>
+      </form>
+      <div id="blockContainer" class="block-container"></div>
+    </div>
+  </div>
+
+  <script>
+    const totalBlocks = 30; // total number of blocks available in the simulation
+    let disk = Array(totalBlocks).fill(null);
+    const container = document.getElementById("blockContainer");
+
+    // Update the pre-filled blocks input field with indices that are marked as "Filled"
+    function updatePreFilledInput() {
+      const preFilledInput = document.getElementById("preFilledBlocks");
+      const filledIndices = [];
+      for (let i = 0; i < totalBlocks; i++) {
+        if (disk[i] === "Filled") {
+          filledIndices.push(i);
+        }
+      }
+      preFilledInput.value = filledIndices.join(", ");
+    }
+
+    // Draw all blocks; attach click listeners so that clicking toggles "Filled" state.
+    function drawBlocks() {
+      container.innerHTML = "";
+      for (let i = 0; i < totalBlocks; i++) {
+        const block = document.createElement("div");
+        block.classList.add("block");
+        // If a block is allocated, display its content; else display its number.
+        block.textContent = disk[i] ? disk[i] : i + 1;
+        if (disk[i] && disk[i].includes("Index")) {
+          // Optionally, you can add a special class for index blocks here.
+          block.classList.add("index-block");
+        }
+        if (disk[i] === "Filled") {
+          block.classList.add("filled");
+        }
+        // When a block is clicked, toggle its pre-filled state.
+        block.addEventListener("click", () => {
+          if (disk[i] === null) {
+            disk[i] = "Filled";
+          } else if (disk[i] === "Filled") {
+            disk[i] = null;
+          }
+          drawBlocks();
+          updatePreFilledInput();
+        });
+        container.appendChild(block);
+      }
+    }
+
+    // Event listener for the file allocation form
+    document.getElementById("fileForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const filename = document.getElementById("filename").value;
+      const filesize = parseInt(document.getElementById("filesize").value); // requested number of data blocks
+
+      // First, find one free block for the index
+      let indexBlock = -1;
+      for (let i = 0; i < totalBlocks; i++) {
+        if (disk[i] === null) {
+          indexBlock = i;
+          break;
+        }
+      }
+      if (indexBlock === -1) {
+        alert("No free block available for the index block.");
+        return;
+      }
+
+      // Then, allocate the required number of data blocks (skipping the index block)
+      let allocatedDataBlocks = [];
+      for (let i = 0; i < totalBlocks; i++) {
+        if (i === indexBlock) continue; // skip the index block
+        if (disk[i] === null) {
+          disk[i] = filename; // allocate this block as a data block for the file
+          allocatedDataBlocks.push(i);
+          if (allocatedDataBlocks.length === filesize) break;
+        }
+      }
+      if (allocatedDataBlocks.length < filesize) {
+        alert("Not enough space to allocate the requested data blocks.");
+        // Optionally, free the index block if data blocks are insufficient
+        disk[indexBlock] = null;
+      } else {
+        // Mark the index block with the file name and note that it's an index
+        disk[indexBlock] = filename + " (Index)";
+        alert(`File '${filename}' allocated with index block at ${indexBlock} and data blocks: ${allocatedDataBlocks.join(", ")}`);
+      }
+      drawBlocks();
+    });
+
+    drawBlocks();
+  </script>
+</body>
+</html>

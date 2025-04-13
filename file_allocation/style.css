@@ -1,0 +1,193 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #121212;
+    color: #f4f4f4;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #1f1f1f;
+    border-radius: 8px;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+p {
+    margin-bottom: 1rem;
+    color: #e0e0e0;
+}
+
+ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    color: #e0e0e0;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+.header,
+.footer {
+    background-color: #4a55af;
+    padding: 1rem 2rem;
+    text-align: center;
+    color: white;
+}
+
+/* Section styles */
+.section {
+    background-color: #252525;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Intro and Theory */
+.intro {
+    margin-bottom: 2rem;
+}
+
+/* Allocation Cards on the Homepage */
+.allocation-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.alloc-card {
+    background-color: #333;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.alloc-card:hover {
+    transform: translateY(-5px);
+}
+
+.alloc-card h3 {
+    background-color: #4a55af;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.alloc-card p {
+    padding: 1rem;
+    color: #ddd;
+}
+
+.sim-btn {
+    background-color: #4a55af;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 1rem auto;
+    display: block;
+    transition: background 0.3s ease;
+}
+
+.sim-btn:hover {
+    background-color: #3a46a2;
+}
+
+/* Buttons for simulation pages */
+.back-button {
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
+    display: block;
+    margin-left: auto;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+
+.input-section {
+    margin: 1rem 0;
+    text-align: center;
+}
+
+input[type="text"], input[type="number"] {
+    padding: 0.75rem;
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    width: 90%;
+    max-width: 250px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #333;
+    color: #f4f4f4;
+}
+
+/* Simulator Section */
+.simulator {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.simulator form {
+    margin-bottom: 1rem;
+}
+
+.block-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 5px;
+    margin: 1rem 0;
+}
+
+.block {
+    width: 30px;
+    height: 30px;
+    background-color: #555;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.filled {
+    background-color: #4CAF50;
+}
+
+.start {
+    background-color: #FF9800;
+}
+
+.end {
+    background-color: #F44336;
+}
