@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Memory Management Simulators</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #00bcd4, #8e44ad);
+      margin: 0;
+      padding: 0;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 80px auto;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 38px;
+      margin-bottom: 30px;
+      color: #fff;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .tool-card {
+      background-color: #ffffffee;
+      color: #333;
+      border-radius: 16px;
+      padding: 25px 30px;
+      margin: 25px 0;
+      text-align: left;
+      transition: transform 0.2s, box-shadow 0.3s;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .tool-title {
+      font-size: 24px;
+      color: #6a1b9a;
+      margin-bottom: 10px;
+    }
+
+    .tool-description {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .launch-button {
+      display: inline-block;
+      background-color: #8e44ad;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .launch-button:hover {
+      background-color: #732d91;
+    }
+
+    .icon {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 30px;
+      color: #ccc;
+    }
+
+    .footer {
+      margin-top: 50px;
+      font-size: 14px;
+      color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Paging, Segmentation and Advance Algorithms</h1>
+
+    <div class="tool-card" onclick="window.location.href='second_chance.html'">
+        <div class="icon">🔁</div>
+        <div class="tool-title">Second Chance Page Replacement</div>
+        <div class="tool-description">
+          Experience how the Second Chance algorithm gives pages a “second chance” using reference bits.
+          Visualize the replacement step-by-step.
+        </div>
+        <a class="launch-button" href="second_chance.html">Launch Simulator</a>
+      </div>
+
+    <div class="tool-card" onclick="window.location.href='pagetablelookup_pagefaulthandling.html'">
+      <div class="icon">📄</div>
+      <div class="tool-title">Page Table Lookup & Page Fault</div>
+      <div class="tool-description">
+        Understand how virtual addresses are translated into physical addresses using page tables.
+        Learn how page faults occur and how to handle them.
+      </div>
+      <a class="launch-button" href="pagetablelookup_pagefaulthandling.html">Launch Simulator</a>
+    </div>
+
+    <div class="tool-card" onclick="window.location.href='segaddresstranslation_segfaulthandling.html'">
+      <div class="icon">📦</div>
+      <div class="tool-title">Segmentation Address Translation & Segmentation Fault</div>
+      <div class="tool-description">
+        Simulate how logical addresses are translated using base and limit.
+        Explore segmentation faults caused by invalid offsets.
+      </div>
+      <a class="launch-button" href="segaddresstranslation_segfaulthandling.html">Launch Simulator</a>
+    </div>
+
+    <div class="tool-card" onclick="window.location.href='tlb_simulation.html'">
+      <div class="icon">⚡</div>
+      <div class="tool-title">TLB (Translation Lookaside Buffer) Simulation</div>
+      <div class="tool-description">
+        See how TLB acts as a fast cache to reduce page table access time.
+        Understand hits, misses, and the role of TLB in address translation.
+      </div>
+      <a class="launch-button" href="tlb_simulation.html">Launch Simulator</a>
+    </div>
+
+    <div class="tool-card" onclick="window.location.href='compaction.html'">
+      <div class="icon">🧩</div>
+      <div class="tool-title">Memory Compaction Simulation</div>
+      <div class="tool-description">
+        Learn how memory fragmentation is managed by compacting memory.
+        Simulate dynamic memory allocation and compaction in action.
+      </div>
+      <a class="launch-button" href="compaction.html">Launch Simulator</a>
+    </div>
+
+    <div class="footer">© 2025 OS Sim Lab · Interactive Learning Made Simple</div>
+  </div>
+</body>
+</html>
+

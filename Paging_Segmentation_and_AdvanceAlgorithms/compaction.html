@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Memory Compaction Algorithm Simulator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #1abc9c, #9b59b6);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #6a1b9a;
+        }
+
+        h3 {
+            text-align: center;
+            color: #555;
+        }
+
+        p.description {
+            font-size: 16px;
+            color: #555;
+            background: #f0f0f0;
+            padding: 15px;
+            border-left: 6px solid #1abc9c;
+            border-radius: 8px;
+        }
+
+        input, button {
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #16a085;
+        }
+
+        .output {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 6px solid #28a745;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 6px solid #dc3545;
+        }
+
+        hr {
+            margin: 30px 0;
+            border: none;
+            height: 2px;
+            background-color: #ddd;
+        }
+
+        .section-title {
+            margin-top: 30px;
+            color: #555;
+        }
+
+        .visualization-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .visualization-step {
+            flex: 1;
+            background: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #6a1b9a;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .visualization-step:nth-child(even) {
+            border-left-color: #1abc9c;
+        }
+
+        .visualization-step:last-child {
+            border-left-color: #9b59b6;
+        }
+
+        .memory-blocks {
+            margin-top: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .memory-block {
+            width: 100px;
+            height: 100px;
+            color: white;
+            line-height: 100px;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+
+        .memory-block.page {
+            background-color: #9b59b6;
+        }
+
+        .memory-block.offset {
+            background-color: #1abc9c;
+        }
+
+        .memory-block.frame {
+            background-color: #34495e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Memory Compaction for Fragmentation </h1>
+        <h3>Simulation of the Compaction Algorithm</h3>
+
+        <p class="description">
+            <strong>What is Memory Compaction?</strong><br><br>
+            Compaction is the process of rearranging memory blocks in such a way that all the occupied memory blocks are moved to one end of the memory, removing fragmentation.
+            It's especially important in systems that use contiguous memory allocation.<br><br>
+
+            How it Works:<br>
+        1️⃣ The OS <strong>moves processes </strong>in memory to one end..<br>
+        2️⃣ It<strong> combines the free spaces</strong>,into one large block..<br>
+        3️⃣ This helps in<strong>loading larger processes</strong>or reducing fragmentation..<br><br>
+      
+            In this simulation, you can visualize the steps of the compaction algorithm.
+        </p>
+
+        <h2 class="section-title">Step 1: Define Memory Blocks</h2>
+        <label>Number of Memory Blocks:</label>
+        <input type="number" id="numBlocks" min="1" max="10">
+        <button onclick="createMemoryBlocks()">Create Memory Blocks</button>
+        <div id="memoryBlockFields"></div>
+        <div id="memoryBlockDisplay"></div>
+
+        <hr>
+
+        <h2 class="section-title">Step 2: Simulate Compaction</h2>
+        <button onclick="compaction()">Perform Compaction</button>
+        <div id="output" class="output"></div>
+
+        <h2 class="section-title">Step-by-Step Visualization</h2>
+        <div id="visualizationSteps" class="visualization-steps">
+            <div class="visualization-step">Step 1: Identify occupied blocks</div>
+            <div class="visualization-step">Step 2: Move occupied blocks to the front</div>
+            <div class="visualization-step">Step 3: Fill the remaining space with free blocks</div>
+        </div>
+
+        <div class="memory-blocks">
+            <div class="memory-block page" id="blockPage">Page</div>
+            <div class="memory-block offset" id="blockOffset">Offset</div>
+            <div class="memory-block frame" id="blockFrame">?</div>
+        </div>
+    </div>
+
+    <script>
+        let memoryBlocks = [];
+
+        function createMemoryBlocks() {
+            const num = parseInt(document.getElementById("numBlocks").value);
+            const container = document.getElementById("memoryBlockFields");
+            container.innerHTML = '';
+            memoryBlocks = [];
+
+            for (let i = 0; i < num; i++) {
+                container.innerHTML += `
+                    <div style="margin-top:10px;">
+                        <strong>Block ${i}</strong><br>
+                        Occupied (1 for Yes, 0 for No): <input type="number" id="block${i}" min="0" max="1" placeholder="1 = occupied, 0 = free">
+                    </div>
+                `;
+            }
+
+            container.innerHTML += `<button style="margin-top:15px;" onclick="saveMemoryBlocks()">Save Memory Blocks</button>`;
+        }
+
+        function saveMemoryBlocks() {
+            memoryBlocks = [];
+            const num = parseInt(document.getElementById("numBlocks").value);
+
+            for (let i = 0; i < num; i++) {
+                const occupied = parseInt(document.getElementById(`block${i}`).value);
+                if (isNaN(occupied)) {
+                    alert(`Fill the occupied flag for Block ${i}`);
+                    return;
+                }
+                memoryBlocks.push(occupied);
+            }
+
+            let html = `<h3>Memory Blocks</h3><table class="page-table"><tr><th>Block</th><th>Status</th></tr>`;
+            memoryBlocks.forEach((block, i) => {
+                html += `<tr><td>${i}</td><td>${block === 1 ? 'Occupied' : 'Free'}</td></tr>`;
+            });
+            html += `</table>`;
+            document.getElementById("memoryBlockDisplay").innerHTML = html;
+        }
+
+        function compaction() {
+            const output = document.getElementById("output");
+
+            let compactionSteps = [];
+            let start = 0;
+
+            // Step 1: Identify occupied blocks
+            for (let i = 0; i < memoryBlocks.length; i++) {
+                if (memoryBlocks[i] === 1) {
+                    compactionSteps.push(`Move Block ${i} (Occupied) to position ${start}`);
+                    memoryBlocks[start] = 1;
+                    memoryBlocks[i] = 0;
+                    start++;
+                }
+            }
+
+            // Step 2: Show result after compaction
+            let html = `<h3>After Compaction</h3><table class="page-table"><tr><th>Block</th><th>Status</th></tr>`;
+            memoryBlocks.forEach((block, i) => {
+                html += `<tr><td>${i}</td><td>${block === 1 ? 'Occupied' : 'Free'}</td></tr>`;
+            });
+            html += `</table>`;
+            document.getElementById("memoryBlockDisplay").innerHTML = html;
+
+            output.className = "output success";
+            output.style.display = "block";
+            output.innerText = `✅ Compaction Completed: Memory Blocks have been rearranged.`;
+
+            // Step 3: Visualize
+            document.getElementById("blockPage").innerText = "Page";
+            document.getElementById("blockOffset").innerText = "Offset";
+            document.getElementById("blockFrame").innerText = "Compacted Address";
+        }
+    </script>
+</body>
+</html>
