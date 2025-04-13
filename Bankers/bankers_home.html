@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banker's Algorithm & Deadlock Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .algorithm {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3498db;
+        }
+        .simulation-btn {
+            display: block;
+            width: 220px;
+            margin: 40px auto;
+            padding: 12px 15px;
+            background-color: #add8e6;
+            color: #2c3e50;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            border: 1px solid #7fb3d5;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        .simulation-btn:hover {
+            background-color: #9acfea;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 25px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .step {
+            margin-bottom: 15px;
+        }
+        .substep {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: #fffde7;
+            padding: 15px;
+            border-left: 4px solid #ffd600;
+            margin: 20px 0;
+        }
+        .working-table {
+            margin: 25px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Deadlock Handling Algorithms</h1>
+        
+        <h2>Banker's Algorithm (Deadlock Avoidance)</h2>
+        
+        <h3>Theory</h3>
+        <p>The Banker's Algorithm is a resource allocation and deadlock avoidance algorithm that tests for safety by simulating the allocation of predetermined maximum possible amounts of all resources, and then makes a "safe-state" check to test for possible deadlock conditions for all other pending activities, before deciding whether allocation should be allowed to continue.</p>
+        
+        <h3>Working</h3>
+        <table class="working-table">
+            <tr>
+                <th>Term</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>Available</td>
+                <td>A vector that indicates the number of available resources of each type. If Available[j] = k, there are k instances of resource type R<sub>j</sub> available.</td>
+            </tr>
+            <tr>
+                <td>Max</td>
+                <td>A matrix that defines the maximum demand of each process. If Max[i][j] = k, then process P<sub>i</sub> may request at most k instances of resource type R<sub>j</sub>.</td>
+            </tr>
+            <tr>
+                <td>Allocation</td>
+                <td>A matrix that defines the number of resources of each type currently allocated to each process. If Allocation[i][j] = k, then P<sub>i</sub> is currently allocated k instances of R<sub>j</sub>.</td>
+            </tr>
+            <tr>
+                <td>Need</td>
+                <td>A matrix that indicates the remaining resource need of each process. Need[i][j] = Max[i][j] - Allocation[i][j].</td>
+            </tr>
+        </table>
+        
+        <h3>Safety Algorithm</h3>
+        <div class="algorithm">
+            <div class="step">
+                <strong>Initialization:</strong>
+                <div class="substep">
+                    1. Let Work be a vector initialized as:
+                    <br>Work = Available
+                </div>
+                <div class="substep">
+                    2. Let Finish be a boolean array where:
+                    <br>Finish[i] = false for all processes i
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Search for a Process:</strong>
+                <div class="substep">
+                    3. Find an index i such that both:
+                    <br>(a) Finish[i] == false
+                    <br>(b) Need[i] ≤ Work (component-wise comparison)
+                </div>
+                <div class="substep">
+                    If no such i exists, proceed to Step 6
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Simulate Execution:</strong>
+                <div class="substep">
+                    4. Work = Work + Allocation[i]
+                </div>
+                <div class="substep">
+                    5. Finish[i] = true
+                </div>
+                <div class="substep">
+                    Go back to Step 3
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Check for Safety:</strong>
+                <div class="substep">
+                    6. If Finish[i] == true for all i, then the system is in a safe state
+                </div>
+                <div class="substep">
+                    Otherwise, the system is unsafe
+                </div>
+            </div>
+        </div>
+        
+        <h3>Resource-Request Algorithm</h3>
+        <div class="algorithm">
+            <div class="step">
+                <strong>Check Maximum Claim:</strong>
+                <div class="substep">
+                    1. If Request[i] > Need[i] for any resource type, raise an error condition
+                    <br>(Process has exceeded its maximum claim)
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Check Availability:</strong>
+                <div class="substep">
+                    2. If Request[i] > Available for any resource type, then P<sub>i</sub> must wait
+                    <br>(Resources are not currently available)
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Pretend Allocation:</strong>
+                <div class="substep">
+                    3. Temporarily modify the state as if the request was granted:
+                    <br>Available = Available - Request[i]
+                    <br>Allocation[i] = Allocation[i] + Request[i]
+                    <br>Need[i] = Need[i] - Request[i]
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Safety Verification:</strong>
+                <div class="substep">
+                    4. Run the Safety Algorithm to check if the resulting state is safe
+                </div>
+                <div class="substep">
+                    5. If safe:
+                    <br>- The allocation is made permanent
+                    <br>- P<sub>i</sub> gets its resources
+                </div>
+                <div class="substep">
+                    If unsafe:
+                    <br>- Restore the original state
+                    <br>- P<sub>i</sub> must wait
+                </div>
+            </div>
+        </div>
+        
+        <h2>Deadlock Detection Algorithm</h2>
+        
+        <h3>Theory</h3>
+        <p>The Deadlock Detection Algorithm examines the system's current state to determine whether any deadlock exists. Unlike the Banker's Algorithm which prevents deadlocks, this algorithm detects them after they occur, allowing the system to take corrective action.</p>
+        
+
+        <h3>Working</h3>
+        <table class="working-table">
+            <tr>
+                <th>Term</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>Available</td>
+                <td>A vector indicating available instances of each resource type.</td>
+            </tr>
+            <tr>
+                <td>Allocation</td>
+                <td>A matrix showing resources currently allocated to processes.</td>
+            </tr>
+            <tr>
+                <td>Request</td>
+                <td>A matrix showing current requests of each process. If Request[i][j] = k, then P<sub>i</sub> is requesting k more instances of R<sub>j</sub>.</td>
+            </tr>
+        </table>
+        
+        <h3>Detection Algorithm</h3>
+        <div class="algorithm">
+            <div class="step">
+                <strong>Initialization:</strong>
+                <div class="substep">
+                    1. Let Work be a copy of Available:
+                    <br>Work = Available
+                </div>
+                <div class="substep">
+                    2. Initialize Finish array:
+                    <br>Finish[i] = (Allocation[i] == [0,...,0])
+                    <br>(A process is initially considered finished if it has no allocated resources)
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Find Executable Process:</strong>
+                <div class="substep">
+                    3. Find an index i such that:
+                    <br>(a) Finish[i] == false
+                    <br>(b) Request[i] ≤ Work (component-wise comparison)
+                </div>
+                <div class="substep">
+                    If no such i exists, go to Step 6
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Simulate Execution:</strong>
+                <div class="substep">
+                    4. Assume P<sub>i</sub> finishes and releases its resources:
+                    <br>Work = Work + Allocation[i]
+                </div>
+                <div class="substep">
+                    5. Mark P<sub>i</sub> as finished:
+                    <br>Finish[i] = true
+                </div>
+                <div class="substep">
+                    Go back to Step 3
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Check for Deadlock:</strong>
+                <div class="substep">
+                    6. If Finish[i] == false for any i, then P<sub>i</sub> is deadlocked
+                </div>
+                <div class="substep">
+                    The set of all processes with Finish[i] == false form the deadlocked set
+                </div>
+            </div>
+        </div>
+        
+        <h3>Recovery Methods</h3>
+        <div class="algorithm">
+            <div class="step">
+                <strong>Process Termination:</strong>
+                <div class="substep">
+                    - Abort all deadlocked processes (complete termination)
+                    <br>- Abort one process at a time until deadlock is resolved (partial termination)
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Resource Preemption:</strong>
+                <div class="substep">
+                    - Select a victim process and roll it back to a safe state
+                    <br>- Preempt resources from the victim and allocate to others
+                    <br>- Consider factors for victim selection:
+                </div>
+            </div>
+        </div>
+        
+        <a href="banker.html" class="simulation-btn"> Simulation</a>
+    </div>
+</body>
+</html>
