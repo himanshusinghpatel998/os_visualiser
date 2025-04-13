@@ -73,7 +73,7 @@
                 margin-left: 1.5rem;
             }
 
-            .a {
+            .nav-link {
                 color: rgba(255, 255, 255, 0.9);
                 text-decoration: none;
                 font-weight: 500;
@@ -86,7 +86,7 @@
                 gap: 8px;
             }
 
-            .a:hover {
+            .nav-link:hover {
                 color: var(--white);
                 background-color: var(--primary-light);
                 transform: translateY(-2px);
@@ -280,7 +280,7 @@
         <nav>
             <a class="logo" href="../index.html"><i class="fas fa-laptop-code"></i>OS VISUALIZER</a>
             <ul>
-                <li><a class="a" href="../index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="../index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
             </ul>
         </nav>
 
@@ -303,7 +303,7 @@
             </div>
 
             <div class="content-links">
-                <a href="./home.html"><i class="fas fa-arrow-left"></i> Back to Sync Problems</a>
+                <a href="./index.html"><i class="fas fa-arrow-left"></i> Back to Sync Problems</a>
                 <a href="./producer_consumer.html"><i class="fas fa-play"></i> Run Simulation</a>
             </div>
         </div>
@@ -319,17 +319,10 @@
                 element.style.animationDelay = `${index * 0.5}s`;
             });
 
-            // Smooth scrolling for navigation
-            document.querySelectorAll('nav a').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const targetId = this.getAttribute('href');
-                    if(targetId === '#') return;
-                    
-                    document.querySelector(targetId).scrollIntoView({
-                        behavior: 'smooth'
-                    });
+            // Navigation debug helper
+            document.querySelectorAll('nav a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    console.log('Navigating to:', this.href);
                 });
             });
 

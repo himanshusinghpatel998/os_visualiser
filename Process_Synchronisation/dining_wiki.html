@@ -9,9 +9,9 @@
 
     <body>
         <nav>
-            <a class="logo" href="../index.html">OS VISUALIZER</a>
+            <a class="logo" href="../index.html"><i class="fas fa-laptop-code"></i> OS VISUALIZER</a>
             <ul>
-                <li><a class="a" href="../index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="../index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
             </ul>
         </nav>
 
@@ -27,7 +27,7 @@
             <img src="includes/dining_items/dining_philosopher_problem.png" alt="Dining Philosophers Problem Illustration">
 
             <div class="content-links">
-                <a href="./home.html"><i class="fas fa-arrow-left"></i> Back to Sync Problems</a>
+                <a href="./index.html"><i class="fas fa-arrow-left"></i> Back to Sync Problems</a>
                 <a href="./dining.html"><i class="fas fa-play"></i> Run Simulation</a>
             </div>
         </div>
@@ -35,5 +35,14 @@
         <footer>
             <p>OS Visualizer &copy; 2023 | Computer Science Education Tool</p>
         </footer>
+        <script>
+            document.querySelector('.nav-link').addEventListener('click', function(e) {
+                console.log('Navigating to:', this.href);
+            });
+            
+            document.querySelector('.logo').addEventListener('click', function(e) {
+                console.log('Navigating to:', this.href);
+            });
+        </script>
     </body>
 </html>

@@ -36,6 +36,24 @@ nav {
     top: 0;
     z-index: 1000;
 }
+.nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-link:hover {
+    color: var(--white);
+    background-color: var(--primary-light);
+    transform: translateY(-2px);
+}
 
 .logo {
     font-size: 1.8rem;

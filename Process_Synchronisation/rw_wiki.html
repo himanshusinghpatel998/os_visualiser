@@ -73,6 +73,26 @@
                 margin-left: 1.5rem;
             }
 
+            .nav-link {
+                color: rgba(255, 255, 255, 0.9);
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 1.1rem;
+                transition: all 0.3s ease;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .nav-link:hover {
+                color: var(--white);
+                background-color: var(--primary-light);
+                transform: translateY(-2px);
+            }
+
+
             .a {
                 color: rgba(255, 255, 255, 0.9);
                 text-decoration: none;
@@ -278,14 +298,11 @@
     </head>
     <body>
         <nav>
-            <a class="logo" href="../index.html"><i class="fas fa-laptop-code"></i>OS VISUALIZER</a>
+            <a class="logo" href="../index.html"><i class="fas fa-laptop-code"></i> OS VISUALIZER</a>
             <ul>
-                <li><a class="a" href="../index.html"><i class="fas fa-home"></i> Home</a></li>
-                <li><a class="a" href="../about.html"><i class="fas fa-info-circle"></i> About</a></li>
-                <li><a class="a" href="#"><i class="fas fa-book"></i> References</a></li>
+                <li><a href="../index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
             </ul>
         </nav>
-
         <div class="container">
             <header>
                 <h1 class="display-3"><i class="fas fa-book-reader"></i> Reader-Writer Problem</h1>
@@ -304,7 +321,7 @@
             </div>
 
             <div class="content-links">
-                <a href="./home.html"><i class="fas fa-arrow-left"></i> Back to Sync Problems</a>
+                <a href="./index.html"><i class="fas fa-arrow-left"></i> Back to Sync Problems</a>
                 <a href="./reader_writer.html"><i class="fas fa-play"></i> Run Simulation</a>
             </div>
         </div>
@@ -342,6 +359,15 @@
                     link.style.borderRadius = '5px';
                 }
             });
+            
+            document.querySelector('.nav-link').addEventListener('click', function(e) {
+                console.log('Navigating to:', this.href);
+            });
+            
+            document.querySelector('.logo').addEventListener('click', function(e) {
+                console.log('Navigating to:', this.href);
+            });
+        
         </script>
     </body>
 </html>

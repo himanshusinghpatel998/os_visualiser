@@ -9,14 +9,11 @@
 
     <body>
         <nav>
-            <a class="logo" href="../index.html"><i class="fas fa-laptop-code"></i>OS VISUALIZER</a>
+            <a class="logo" href="../index.html"><i class="fas fa-laptop-code"></i> OS VISUALIZER</a>
             <ul>
-                <li><a class="a" href="../index.html"><i class="fas fa-home"></i> Home</a></li>
-                <li><a class="a" href="../about.html"><i class="fas fa-info-circle"></i> About</a></li>
-                <li><a class="a" href="#"><i class="fas fa-book"></i> References</a></li>
+                <li><a href="../index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
             </ul>
         </nav>
-
         <div class="container">
             <header>
                 <h1 class="display-3"><i class="fas fa-smoking"></i> Cigarette Smokers Problem</h1>
@@ -39,7 +36,7 @@
             </div>
 
             <div class="content-links">
-                <a href="./home.html"><i class="fas fa-arrow-left"></i> Back to Sync Problems</a>
+                <a href="./index.html"><i class="fas fa-arrow-left"></i> Back to Sync Problems</a>
                 <a href="./cigarette_smokers.html"><i class="fas fa-play"></i> Run Simulation</a>
             </div>
         </div>
@@ -50,32 +47,33 @@
         </footer>
 
         <script>
-            // Add floating animation to elements
-            document.querySelectorAll('.floating').forEach((element, index) => {
-                element.style.animationDelay = `${index * 0.5}s`;
-            });
+            // Improved navigation handling
+                document.addEventListener('DOMContentLoaded', function() {
+                // Floating animation
+                document.querySelectorAll('.floating').forEach((element, index) => {
+                    element.style.animationDelay = `${index * 0.5}s`;
+                });
 
-            // Smooth scrolling for navigation
-            document.querySelectorAll('nav a').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const targetId = this.getAttribute('href');
-                    if(targetId === '#') return;
-                    
-                    document.querySelector(targetId).scrollIntoView({
-                        behavior: 'smooth'
+                // Navigation handling
+                const navLinks = document.querySelectorAll('nav a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        console.log('Navigation attempt to:', this.href);
+                        // Allow normal navigation
+                        return true;
                     });
                 });
-            });
 
-            // Highlight current page in navigation
-            const currentPage = window.location.pathname.split('/').pop();
-            document.querySelectorAll('nav a').forEach(link => {
-                if(link.getAttribute('href').includes(currentPage)) {
-                    link.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-                    link.style.borderRadius = '5px';
-                }
+                        // Remove the smooth scroll prevention as it was blocking navigation
+                        const smoothScrollElements = document.querySelectorAll('a[href^="#"]');
+                smoothScrollElements.forEach(anchor => {
+                    anchor.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    });
+                });
             });
         </script>
     </body>
