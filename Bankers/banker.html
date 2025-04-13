@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deadlock Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Deadlock Management System</h1>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('banker')">Banker's Algorithm</button>
+            <button class="tab-btn" onclick="openTab('detection')">Deadlock Detection</button>
+        </div>
+        
+        <!-- Banker's Algorithm Tab -->
+        <div id="banker" class="tab-content active">
+            <div class="control-panel">
+                <div class="input-group">
+                    <label for="banker-processes">Number of Processes:</label>
+                    <input type="number" id="banker-processes" min="1" value="5">
+                </div>
+                <div class="input-group">
+                    <label for="banker-resources">Number of Resource Types:</label>
+                    <input type="number" id="banker-resources" min="1" value="3">
+                </div>
+                <div class="btn-group">
+                    <button onclick="initBankerMatrices()">Initialize Matrices</button>
+                    <button onclick="loadBankerSample()">Load Sample Data</button>
+                    <button onclick="clearBankerData()">Clear Data</button>
+                </div>
+            </div>
+            
+            <div class="matrix-section">
+                <div class="matrix-panel">
+                    <h3>Available Resources</h3>
+                    <div id="banker-available-container" class="vector-container"></div>
+                </div>
+                
+                <div class="matrix-panel scrollable">
+                    <h3>Allocation Matrix</h3>
+                    <table id="banker-allocation-container" class="matrix-table">
+                        <thead id="banker-allocation-header"></thead>
+                        <tbody id="banker-allocation-body"></tbody>
+                    </table>
+                </div>
+                
+                <div class="matrix-panel scrollable">
+                    <h3>Max Matrix</h3>
+                    <table id="banker-max-container" class="matrix-table">
+                        <thead id="banker-max-header"></thead>
+                        <tbody id="banker-max-body"></tbody>
+                    </table>
+                </div>
+                
+                <div class="matrix-panel scrollable">
+                    <h3>Need Matrix</h3>
+                    <table id="banker-need-container" class="matrix-table">
+                        <thead id="banker-need-header"></thead>
+                        <tbody id="banker-need-body"></tbody>
+                    </table>
+                    <button onclick="calculateNeedMatrix()">Calculate Need Matrix</button>
+                </div>
+            </div>
+            
+            <div class="action-section">
+                <button onclick="checkSafety()">Check Safety</button>
+                <div id="banker-result" class="result-container"></div>
+            </div>
+            
+            <div class="request-section">
+                <h3>Resource Request</h3>
+                <div class="request-controls">
+                    <div class="input-group">
+                        <label for="request-process">Process Number:</label>
+                        <select id="request-process"></select>
+                    </div>
+                    <div class="request-vector">
+                        <h4>Request Vector:</h4>
+                        <div id="request-vector-container" class="vector-container"></div>
+                    </div>
+                </div>
+                <button onclick="processRequest()">Request Resources</button>
+                <div id="request-result" class="result-container"></div>
+            </div>
+        </div>
+        
+        <!-- Deadlock Detection Tab -->
+        <div id="detection" class="tab-content">
+            <div class="control-panel">
+                <div class="input-group">
+                    <label for="detection-processes">Number of Processes:</label>
+                    <input type="number" id="detection-processes" min="1" value="5">
+                </div>
+                <div class="input-group">
+                    <label for="detection-resources">Number of Resource Types:</label>
+                    <input type="number" id="detection-resources" min="1" value="3">
+                </div>
+                <div class="btn-group">
+                    <button onclick="initDetectionMatrices()">Initialize Matrices</button>
+                    <button onclick="loadDetectionSample()">Load Sample Data</button>
+                    <button onclick="clearDetectionData()">Clear Data</button>
+                </div>
+            </div>
+            
+            <div class="matrix-section">
+                <div class="matrix-panel">
+                    <h3>Available Resources</h3>
+                    <div id="detection-available-container" class="vector-container"></div>
+                </div>
+                
+                <div class="matrix-panel scrollable">
+                    <h3>Allocation Matrix</h3>
+                    <table id="detection-allocation-container" class="matrix-table">
+                        <thead id="detection-allocation-header"></thead>
+                        <tbody id="detection-allocation-body"></tbody>
+                    </table>
+                </div>
+                
+                <div class="matrix-panel scrollable">
+                    <h3>Request Matrix</h3>
+                    <table id="detection-request-container" class="matrix-table">
+                        <thead id="detection-request-header"></thead>
+                        <tbody id="detection-request-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="action-section">
+                <button onclick="detectDeadlock()">Detect Deadlock</button>
+                <div id="detection-result" class="result-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
