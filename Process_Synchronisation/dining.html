@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dining Philosophers Problem</title>
+    
+    <!-- Styles & Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --philosopher-color: #4a55af;
+            --chopstick-color: #8a5a44;
+            --eating-color: #ff6b6b;
+            --thinking-color: #4ecdc4;
+            --waiting-color: #ffe66d;
+            --table-color: #f7fff7;
+        }
+
+        body {
+            font-family: 'Philosopher', sans-serif;
+            background-color: #f0f7f4;
+            color: #333;
+        }
+        
+        h1 {
+            color: var(--philosopher-color);
+            margin: 20px 0;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .panel {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+        
+        .panel-heading {
+            background-color: var(--philosopher-color);
+            color: white;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .label {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .label-thinking { background: var(--thinking-color); color: white; }
+        .label-eating { background: var(--eating-color); color: white; }
+        .label-waiting { background: var(--waiting-color); color: #333; }
+        .label-available { background: #e0e0e0; color: #333; }
+        .label-held { background: var(--chopstick-color); color: white; }
+        
+        .btn {
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-group {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        /* Visualization */
+        .table-visualization {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            margin: 40px auto;
+        }
+        
+        .table {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: var(--table-color);
+            border-radius: 50%;
+            top: 50px;
+            left: 50px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+            border: 10px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--philosopher-color);
+        }
+        
+        .philosopher {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: var(--thinking-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.5s ease;
+            z-index: 10;
+        }
+        
+        .philosopher.eating {
+            background: var(--eating-color);
+            transform: scale(1.1);
+        }
+        
+        .philosopher.waiting {
+            background: var(--waiting-color);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .chopstick {
+            position: absolute;
+            width: 40px;
+            height: 6px;
+            background: var(--chopstick-color);
+            border-radius: 3px;
+            z-index: 5;
+            transition: all 0.5s ease;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .chopstick.held {
+            transform: scale(1.2);
+            background: #5a3928;
+            z-index: 15;
+        }
+        
+        /* Status animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--philosopher-color);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .table-visualization {
+                width: 280px;
+                height: 280px;
+            }
+            .table {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container py-4">
+        <h1 class="text-center"><i class="fas fa-utensils"></i> Dining Philosophers Problem</h1>
+        
+        <!-- Visualization -->
+        <div class="table-visualization">
+            <div class="table">Round Table</div>
+            <div class="philosopher p1" data-id="1"><i class="fas fa-user-tie"></i></div>
+            <div class="philosopher p2" data-id="2"><i class="fas fa-user-graduate"></i></div>
+            <div class="philosopher p3" data-id="3"><i class="fas fa-user-astronaut"></i></div>
+            <div class="philosopher p4" data-id="4"><i class="fas fa-user-ninja"></i></div>
+            <div class="philosopher p5" data-id="5"><i class="fas fa-user-md"></i></div>
+            <div class="chopstick c1" data-id="1"></div>
+            <div class="chopstick c2" data-id="2"></div>
+            <div class="chopstick c3" data-id="3"></div>
+            <div class="chopstick c4" data-id="4"></div>
+            <div class="chopstick c5" data-id="5"></div>
+        </div>
+        
+        <!-- Controls -->
+        <div class="row my-4">
+            <div class="col-md-6 offset-md-3">
+                <div class="d-flex justify-content-center">
+                    <div class="btn-group shadow" role="group">
+                        <button type="button" class="btn btn-outline-primary" id="step-prev">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-light" id="step-n" disabled>
+                            Step <span id="step-count">0</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="step-next">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status Panels -->
+        <div class="row">
+            <!-- Philosophers Panel -->
+            <div class="col-md-4 mb-4">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <i class="fas fa-users"></i> Philosophers
+                    </div>
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <span><i class="fas fa-user-tie"></i> Philosopher #1</span>
+                            <span class="label label-thinking" id="philosopher_1">Thinking</span>
+                        </div>
+                        <div class="list-group-item">
+                            <span><i class="fas fa-user-graduate"></i> Philosopher #2</span>
+                            <span class="label label-thinking" id="philosopher_2">Thinking</span>
+                        </div>
+                        <div class="list-group-item">
+                            <span><i class="fas fa-user-astronaut"></i> Philosopher #3</span>
+                            <span class="label label-thinking" id="philosopher_3">Thinking</span>
+                        </div>
+                        <div class="list-group-item">
+                            <span><i class="fas fa-user-ninja"></i> Philosopher #4</span>
+                            <span class="label label-thinking" id="philosopher_4">Thinking</span>
+                        </div>
+                        <div class="list-group-item">
+                            <span><i class="fas fa-user-md"></i> Philosopher #5</span>
+                            <span class="label label-thinking" id="philosopher_5">Thinking</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Current Activity -->
+            <div class="col-md-4 mb-4">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <i class="fas fa-utensils"></i> Current Activity
+                    </div>
+                    <div class="list-group">
+                        <div class="list-group-item text-center">
+                            <div id="eating_philosopher" class="py-3">
+                                <i class="fas fa-couch fa-3x text-muted"></i>
+                                <p class="mt-2 mb-0">No one is eating</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chopsticks Panel -->
+            <div class="col-md-4 mb-4">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <i class="fas fa-utensil-spoon"></i> Chopsticks
+                    </div>
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <span><i class="fas fa-utensils"></i> Chopstick #1</span>
+                            <span class="label label-available" id="chopstick_1">Available</span>
+                        </div>
+                        <div class="list-group-item">
+                            <span><i class="fas fa-utensils"></i> Chopstick #2</span>
+                            <span class="label label-available" id="chopstick_2">Available</span>
+                        </div>
+                        <div class="list-group-item">
+                            <span><i class="fas fa-utensils"></i> Chopstick #3</span>
+                            <span class="label label-available" id="chopstick_3">Available</span>
+                        </div>
+                        <div class="list-group-item">
+                            <span><i class="fas fa-utensils"></i> Chopstick #4</span>
+                            <span class="label label-available" id="chopstick_4">Available</span>
+                        </div>
+                        <div class="list-group-item">
+                            <span><i class="fas fa-utensils"></i> Chopstick #5</span>
+                            <span class="label label-available" id="chopstick_5">Available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status Messages -->
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <i class="fas fa-comment-alt"></i> Simulation Log
+                    </div>
+                    <div class="panel-body" id="status">
+                        <div class="status-message">
+                            <i class="fas fa-info-circle text-primary"></i> Simulation ready. Click "Next" to begin.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    $(document).ready(function() {
+        // Simulation state
+        const philosophers = [
+            { id: 1, state: 'T', leftChopstick: 1, rightChopstick: 2 },
+            { id: 2, state: 'T', leftChopstick: 2, rightChopstick: 3 },
+            { id: 3, state: 'T', leftChopstick: 3, rightChopstick: 4 },
+            { id: 4, state: 'T', leftChopstick: 4, rightChopstick: 5 },
+            { id: 5, state: 'T', leftChopstick: 5, rightChopstick: 1 }
+        ];
+        
+        const chopsticks = [
+            { id: 1, state: 'A' },
+            { id: 2, state: 'A' },
+            { id: 3, state: 'A' },
+            { id: 4, state: 'A' },
+            { id: 5, state: 'A' }
+        ];
+        
+        let currentStep = 0;
+        let simulationSteps = [];
+        
+        // Initialize visualization
+        function initializeVisualization() {
+            // Position philosophers around the table
+            positionElements();
+            
+            // Initialize all philosophers as thinking
+            philosophers.forEach(p => {
+                updatePhilosopherVisual(p.id, p.state);
+            });
+            
+            // Initialize all chopsticks as available
+            chopsticks.forEach(c => {
+                updateChopstickVisual(c.id, c.state);
+            });
+        }
+        
+        // Position elements around the table
+        function positionElements() {
+            const radius = 125;
+            const centerX = 175;
+            const centerY = 175;
+            
+            // Position philosophers
+            philosophers.forEach((p, index) => {
+                const angle = (index * (2 * Math.PI / philosophers.length)) - Math.PI/2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                $(`.p${p.id}`).css({ left: x - 25, top: y - 25 });
+            });
+            
+            // Position chopsticks between philosophers
+            chopsticks.forEach((c, index) => {
+                const angle1 = (index * (2 * Math.PI / chopsticks.length)) - Math.PI/2;
+                const angle2 = ((index + 1) * (2 * Math.PI / chopsticks.length)) - Math.PI/2;
+                const x = centerX + (radius - 30) * Math.cos((angle1 + angle2)/2);
+                const y = centerY + (radius - 30) * Math.sin((angle1 + angle2)/2);
+                const rotation = (angle1 + angle2)/2 * (180/Math.PI);
+                
+                $(`.c${c.id}`).css({ 
+                    left: x - 20, 
+                    top: y - 3,
+                    transform: `rotate(${rotation}deg)`
+                });
+            });
+        }
+        
+        // Update philosopher visualization
+        function updatePhilosopherVisual(id, state) {
+            const $philosopher = $(`.p${id}`);
+            const $label = $(`#philosopher_${id}`);
+            
+            $philosopher.removeClass('eating thinking waiting');
+            $label.removeClass('label-eating label-thinking label-waiting');
+            
+            if (state === 'E') { // Eating
+                $philosopher.addClass('eating');
+                $label.addClass('label-eating').text('Eating');
+                $('#eating_philosopher').html(`
+                    <i class="fas fa-utensils fa-3x text-danger"></i>
+                    <p class="mt-2 mb-0">Philosopher #${id} is eating</p>
+                    <div class="mt-2">
+                        <img src="https://media.giphy.com/media/3o7TKAZnIu4w31OqmA/giphy.gif" style="width: 80px; border-radius: 50%;">
+                    </div>
+                `);
+            } 
+            else if (state === 'T') { // Thinking
+                $philosopher.addClass('thinking');
+                $label.addClass('label-thinking').text('Thinking');
+                if (id === parseInt($('#eating_philosopher p').text().match(/#(\d+)/)?.[1])) {
+                    $('#eating_philosopher').html(`
+                        <i class="fas fa-couch fa-3x text-muted"></i>
+                        <p class="mt-2 mb-0">No one is eating</p>
+                    `);
+                }
+            } 
+            else if (state === 'W') { // Waiting
+                $philosopher.addClass('waiting');
+                $label.addClass('label-waiting').text('Waiting');
+            }
+        }
+        
+        // Update chopstick visualization
+        function updateChopstickVisual(id, state) {
+            const $label = $(`#chopstick_${id}`);
+            const $chopstick = $(`.c${id}`);
+            
+            if (state === 'H') { // Held
+                $label.removeClass('label-available').addClass('label-held').text('Held');
+                $chopstick.addClass('held');
+            } else { // Available
+                $label.removeClass('label-held').addClass('label-available').text('Available');
+                $chopstick.removeClass('held');
+            }
+        }
+        
+        // Add status message
+        function updateStatus(message) {
+            $('#status').prepend(`
+                <div class="status-message">
+                    <i class="fas fa-info-circle text-primary"></i> ${message}
+                </div>
+            `);
+            if ($('#status .status-message').length > 5) {
+                $('#status .status-message').last().remove();
+            }
+        }
+        
+        // Run one step of the simulation
+        function runSimulationStep() {
+            if (currentStep >= simulationSteps.length) {
+                generateRandomStep();
+            }
+            
+            const step = simulationSteps[currentStep];
+            
+            // Update philosopher state
+            if (step.philosopher && step.state) {
+                const philosopher = philosophers.find(p => p.id === step.philosopher);
+                philosopher.state = step.state;
+                updatePhilosopherVisual(philosopher.id, philosopher.state);
+                
+                const action = step.state === 'E' ? 'starts eating' : 
+                              step.state === 'T' ? 'finishes eating and starts thinking' : 
+                              'is waiting for chopsticks';
+                updateStatus(`Philosopher #${philosopher.id} ${action}`);
+            }
+            
+            // Update chopstick state
+            if (step.chopstick && step.chopstickState) {
+                const chopstick = chopsticks.find(c => c.id === step.chopstick);
+                chopstick.state = step.chopstickState;
+                updateChopstickVisual(chopstick.id, chopstick.state);
+                
+                const action = step.chopstickState === 'H' ? 'picks up' : 'puts down';
+                updateStatus(`Philosopher #${step.philosopher} ${action} chopstick #${step.chopstick}`);
+            }
+            
+            // Update step counter
+            currentStep++;
+            $('#step-count').text(currentStep);
+            $('#step-prev').prop('disabled', currentStep <= 1);
+        }
+        
+        // Go back one step
+        function undoSimulationStep() {
+            if (currentStep <= 0) return;
+            
+            currentStep--;
+            $('#step-count').text(currentStep);
+            $('#step-prev').prop('disabled', currentStep <= 1);
+            
+            // Reset to initial state
+            philosophers.forEach(p => p.state = 'T');
+            chopsticks.forEach(c => c.state = 'A');
+            
+            // Replay all steps up to current
+            for (let i = 0; i < currentStep; i++) {
+                const step = simulationSteps[i];
+                
+                if (step.philosopher && step.state) {
+                    const philosopher = philosophers.find(p => p.id === step.philosopher);
+                    philosopher.state = step.state;
+                }
+                
+                if (step.chopstick && step.chopstickState) {
+                    const chopstick = chopsticks.find(c => c.id === step.chopstick);
+                    chopstick.state = step.chopstickState;
+                }
+            }
+            
+            // Update visualization
+            philosophers.forEach(p => updatePhilosopherVisual(p.id, p.state));
+            chopsticks.forEach(c => updateChopstickVisual(c.id, c.state));
+            
+            updateStatus(`Rewound to step ${currentStep}`);
+        }
+        
+        // Generate a random simulation step
+        function generateRandomStep() {
+            const philosopherId = Math.floor(Math.random() * 5) + 1;
+            const philosopher = philosophers.find(p => p.id === philosopherId);
+            
+            // Alternate between thinking and trying to eat
+            if (philosopher.state === 'T') {
+                // Try to pick up chopsticks
+                const leftChopstick = chopsticks.find(c => c.id === philosopher.leftChopstick);
+                const rightChopstick = chopsticks.find(c => c.id === philosopher.rightChopstick);
+                
+                if (leftChopstick.state === 'A' && rightChopstick.state === 'A') {
+                    // Can eat
+                    simulationSteps.push(
+                        { philosopher: philosopherId, chopstick: philosopher.leftChopstick, chopstickState: 'H' },
+                        { philosopher: philosopherId, chopstick: philosopher.rightChopstick, chopstickState: 'H' },
+                        { philosopher: philosopherId, state: 'E' }
+                    );
+                } else {
+                    // Can't eat, goes to waiting
+                    simulationSteps.push(
+                        { philosopher: philosopherId, state: 'W' }
+                    );
+                }
+            } else if (philosopher.state === 'E' || philosopher.state === 'W') {
+                // Finish eating and release chopsticks
+                simulationSteps.push(
+                    { philosopher: philosopherId, state: 'T' },
+                    { philosopher: philosopherId, chopstick: philosopher.leftChopstick, chopstickState: 'A' },
+                    { philosopher: philosopherId, chopstick: philosopher.rightChopstick, chopstickState: 'A' }
+                );
+            }
+        }
+        
+        // Initialize
+        initializeVisualization();
+        
+        // Generate first steps
+        for (let i = 0; i < 5; i++) {
+            generateRandomStep();
+        }
+        
+        // Event listeners
+        $('#step-next').click(function() {
+            runSimulationStep();
+            
+            // Generate more steps if we're running low
+            if (currentStep >= simulationSteps.length - 2) {
+                generateRandomStep();
+            }
+        });
+        
+        $('#step-prev').click(function() {
+            undoSimulationStep();
+        });
+    });
+    </script>
+</body>
+</html>

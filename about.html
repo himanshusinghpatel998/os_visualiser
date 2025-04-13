@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      background-color: #000000; /* Black */
+      color: #ffffff; /* White */
+      font-family: Arial, sans-serif; /* Fallback font */
+      margin: 0;
+      padding: 0;
+      justify-content: center;
+    }
+    
+    h1, h2, h3 {
+      color: #7e57e2; /* Light indigo */
+    }
+    
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    li {
+      margin: 5px 0;
+    }
+
+    header {
+      padding: 10px;
+      background-color: #6200ea; /* Deep purple */
+      text-align: center;
+      width: 100%;
+      animation: slide-up 0.5s ease-out;
+    }
+
+    header h1 {
+      color: #ffffff; /* Pure white */
+    }
+
+    footer {
+      padding: 10px;
+      background-color: #6200ea; /* Deep purple */
+      color: #ffffff; /* White */
+      text-align: center;
+      width: 100%;
+      animation: slide-up 0.5s ease-out;
+      position: fixed;
+      bottom: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto; /* Adjusted margin */
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow effect */
+      animation: fade-in 0.5s ease-out;
+    }
+    
+    p {
+      line-height: 1.5;
+    }
+
+    /* Animations */
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slide-up {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+
+    /* Left Container */
+    .left-container {
+      margin-left: 8px;
+      width: 39%;
+      float: left;
+    }
+
+    /* Right Container */
+    .right-container {
+      margin-right: 8px;
+      width: 53.5%;
+      float: right;
+    }
+
+    /* Clearfix for Floats */
+    .clearfix::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+
+    /* Centered Content */
+    .centered {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>About Our OS Simulator Project</h1>
+  </header>
+
+  <div class="container left-container">
+    <h2>Team Members</h2>
+    <ul>
+      <li>Dhiya N (231CS121)</li>
+      <li>Dhruv (231CS122)</li>
+      <li>Girish (231CS123)</li>
+      <li>Viren Haresh Kundnani (221CS165)</li>
+      <li>Vivek Kumar (221CS166)</li>
+      <li>Vishal Kamath (221CS261)</li>
+      <li>Himanshu Singh Patel (231CS127)</li>
+      <li>Vishvendra (221CS263)</li>
+      <li>Himaneesh Yadala (221CS264)</li>
+      <li>Yashas (221CS265)</li>
+      <li>Pasumarthi Rithik (201CS237)</li>
+    </ul>
+  </div>
+
+  <div class="container right-container">
+    <h2>Project Description</h2>
+    <p>
+        Our OS Simulator project serves as an educational platform aimed at providing users with a deep understanding of various Operating System Algorithms. Through interactive simulations, our goal is to make the learning process accessible and enjoyable for all users. With our simulator, users can observe the execution of diverse OS algorithms, such as process scheduling, memory management, and file system organization. Our platform offers step-by-step visualizations to elucidate the intricate workings of each algorithm, accompanied by concise descriptions that dissect their key components and demonstrate their impact on overall system performance. We prioritize creating an intuitive and engaging learning experience, allowing users to navigate through different algorithms effortlessly and focus on understanding rather than grappling with technical details. Our ultimate objective is to empower users to enhance their knowledge of operating system concepts and algorithms, recognizing the significance of these fundamental principles in the realm of computer systems and software development.
+    </p>
+    
+  </div>
+
+</body>
+</html>

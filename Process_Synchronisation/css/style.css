@@ -1,0 +1,129 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: black;
+    color: #d1c4e9;
+}
+
+header {
+    margin-top: 80px;
+    /*background-color: #007bff;*/
+    color: #d1c4e9;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    padding-bottom: 10px;
+}
+
+header p {
+    margin: 0;
+    font-size: 20px;
+}
+
+.simulation-links {
+    margin: 20px auto;
+    width: 80%;
+    text-align: center;
+}
+
+button {
+    display: block;
+    width: 60%;
+    padding: 10px;
+    margin: 10px auto;
+    font-size: 18px;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.reader-writer {
+    background-color: #28a745; /* Green */
+}
+
+.producer-consumer {
+    background-color: #007bff; /* Blue */
+}
+
+.dining-philosophers {
+    background-color: #ffc107; /* Yellow */
+}
+
+.smoking-problem {
+    background-color: #dc3545; /* Red */
+}
+
+.barber-problem {
+    background-color: #6c757d; /* Grey */
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+nav {
+    background-color:#6200ea; /* Light purple */
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 0 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo {
+    font-size: 24px;
+    color: #ffffff; /* White */
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logo:hover {
+    background-color: #8502f7;
+    text-decoration: none;
+    color:#ffffff
+     /* Dark purple */
+  }
+  
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+  
+  li {
+    margin: 0 10px;
+  }
+  
+  a {
+    color: #ffffff; /* White */
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    background-color:#6200ea; /* Light purple */
+  }
+  
+  a:hover {
+    background-color:#8502f7; /* Dark purple */
+    text-decoration: none;
+    color:#ffffff
+  }
