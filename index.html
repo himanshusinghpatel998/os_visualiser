@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Scheduling Algorithm Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* CSS will go here */
+    </style>
+</head>
+<link rel="stylesheet" href="style.css">
+<script src="script.js"></script>
+
+<body>
+    <div class="floating-particles" id="particles"></div>
+
+    <header>
+        <h1>CPU Scheduling Algorithm Visualizer</h1>
+        <p>Interactive simulator for various CPU scheduling algorithms with visualization</p>
+    </header>
+
+    <div class="container">
+        <div class="input-section">
+            <div class="algorithm-details" id="algorithmDetails">
+                <!-- Algorithm details content will be populated by JavaScript -->
+            </div>
+            
+            <h2>Input Parameters</h2>
+            <div class="form-group">
+                <label for="algorithm">Scheduling Algorithm</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-project-diagram"></i>
+                    <select id="algorithm">
+                        <option value="fcfs">First Come First Serve (FCFS)</option>
+                        <option value="sjf">Shortest Job First (SJF) - Non-Preemptive</option>
+                        <option value="srtf">Shortest Remaining Time First (SRTF) - Preemptive</option>
+                        <option value="rr">Round Robin (RR)</option>
+                        <option value="priority">Priority - Non-Preemptive</option>
+                        <option value="priority_p">Priority - Preemptive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" id="timeQuantumGroup" style="display: none;">
+                <label for="timeQuantum">Time Quantum (for Round Robin)</label>
+                <div class="number-control">
+                    <button class="number-btn decrease-btn" data-target="timeQuantum"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="timeQuantum" min="1" value="2">
+                    <button class="number-btn increase-btn" data-target="timeQuantum"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+
+            <h3>Processes</h3>
+            <div class="process-inputs" id="processInputs">
+                <!-- Process rows will be added by JavaScript -->
+            </div>
+
+            <button class="add-btn" id="addProcess"><i class="fas fa-plus"></i> Add Process</button>
+            <button id="simulate"><i class="fas fa-play"></i> Simulate</button>
+            <button id="reset"><i class="fas fa-redo"></i> Reset</button>
+        </div>
+
+        <div class="output-section">
+            <h2>Simulation Results</h2>
+            <div id="results">
+                <p>Select an algorithm and click "Simulate" to see the results.</p>
+            </div>
+
+            <div class="gantt-chart" id="ganttChart" style="display: none;">
+                <h3>Gantt Chart</h3>
+                <div class="gantt-container" id="ganttContainer"></div>
+            </div>
+
+            <div class="stats" id="stats" style="display: none;">
+                <!-- Stats will be populated by JavaScript -->
+            </div>
+
+            <div class="process-table" id="processTable" style="display: none;">
+                <!-- Process table will be populated by JavaScript -->
+            </div>
+
+            <div class="chart-container" id="chartContainer" style="display: none;">
+                <h3>Performance Metrics</h3>
+                <div class="chart-row">
+                    <div class="chart-box">
+                        <div class="chart-title">Waiting Time Distribution</div>
+                        <canvas id="waitingTimeChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <div class="chart-title">Turnaround Time Distribution</div>
+                        <canvas id="turnaroundTimeChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-row">
+                    <div class="chart-box">
+                        <div class="chart-title">Response Time Distribution</div>
+                        <canvas id="responseTimeChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <div class="chart-title">Time Comparison</div>
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="algorithm-info">
+                <h3>Algorithm Information</h3>
+                <div class="info-tabs">
+                    <div class="info-tab active" data-tab="description">Description</div>
+                    <div class="info-tab" data-tab="formula">Formula</div>
+                    <div class="info-tab" data-tab="advantages">Advantages</div>
+                    <div class="info-tab" data-tab="disadvantages">Disadvantages</div>
+                    <div class="info-tab" data-tab="comparison">Comparison</div>
+                </div>
+
+                <div class="info-content active" id="description">
+                    <p>Select an algorithm to see its description.</p>
+                </div>
+
+                <div class="info-content" id="formula">
+                    <p>Select an algorithm to see the formulas used.</p>
+                </div>
+
+                <div class="info-content" id="advantages">
+                    <p>Select an algorithm to see its advantages.</p>
+                </div>
+
+                <div class="info-content" id="disadvantages">
+                    <p>Select an algorithm to see its disadvantages.</p>
+                </div>
+
+                <div class="info-content" id="comparison">
+                    <p>Select an algorithm to see comparison with others.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // JavaScript will go here
+    </script>
+</body>
+</html>
