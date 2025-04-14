@@ -98,7 +98,7 @@ Simulate file storage techniques:
 git clone https://github.com/himanshusinghpatel998/os_visualiser
 
 
-cd os-visualiser
+cd os_visualiser
 
 
 Run the Visualiser
