@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Replacement Visualization</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #f97316;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --success: #10b981;
+            --danger: #ef4444;
+            --background: #0f172a;
+            --card-bg: #1e293b;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--light);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            padding: 2rem;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .heading {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        h1 {
+            font-weight: 700;
+            color: var(--primary-light);
+            margin-bottom: 0.5rem;
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--light);
+            font-size: 0.95rem;
+        }
+        
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        input[type="text"]::placeholder, input[type="number"]::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 0.75rem auto;
+            padding-right: 2.5rem;
+        }
+        
+        option {
+            background-color: var(--dark);
+        }
+        
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 160px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-info {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .results-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-top: 3rem;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .results-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .results-heading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            gap: 0.5rem;
+        }
+        
+        .results-heading h2 {
+            color: var(--primary-light);
+            font-weight: 700;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        
+        .hit {
+            background-color: rgba(16, 185, 129, 0.7);
+        }
+        
+        .miss {
+            background-color: rgba(239, 68, 68, 0.7);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        th {
+            background-color: var(--primary-dark);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .summary {
+            background-color: rgba(99, 102, 241, 0.1);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .stat-card {
+            background-color: var(--dark);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-title {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            color: var(--primary-light);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-highlight {
+            color: var(--secondary);
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: rgba(15, 23, 42, 0.9);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .card, .results-card {
+                padding: 1.5rem;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="heading">
+                <h1>PAGE REPLACEMENT VISUALIZER</h1>
+                <p class="subtitle">Analyze and visualize different page replacement algorithms</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="input_string">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                    Stream of Pages:
+                </label>
+                <input type="text" id="input_string" placeholder="e.g. 7 0 1 2 0 3 0 4 2 3 0 3 2" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="frame_size">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Number of Frames:
+                </label>
+                <input id="frame_size" type="number" name="frame" min="1" placeholder="e.g. 3" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="drop_down">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Algorithm:
+                </label>
+                <select id="drop_down" name="algo" required>
+                    <option value="" disabled selected>Select an algorithm</option>
+                    <option value="FIFO">First In First Out (FIFO)</option>
+                    <option value="Optimal">Optimal</option>
+                    <option value="LRU">Least Recently Used (LRU)</option>
+                    <option value="MRU">Most Recently Used (MRU)</option>
+                    <option value="Random">Random</option>
+                </select>
+            </div>
+            
+            <div class="buttons-container">
+                <button id="btn1" type="button" onclick="disableButton1(); showDiv(); visualize();" class="btn btn-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-play"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    Visualize
+                </button>
+                
+                <button id="btn2" type="button" onclick="enableButton1(); reset();" class="btn btn-danger">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+                    Reset
+                </button>
+                
+                <button id="btn3" type="button" onclick="redirect();" class="btn btn-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bar-chart-2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    Compare Algorithms
+                </button>
+            </div>
+        </div>
+        
+        <div class="results-card" id="SUM" style="display:none;">
+            <div class="results-heading">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                <h2>VISUALIZATION AND SUMMARY</h2>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color hit"></div>
+                    <span>Page Hit</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color miss"></div>
+                    <span>Page Miss</span>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table id="tbl" class="table-bordered">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div class="summary">
+                <div class="stat-card tooltip">
+                    <span class="tooltiptext">Number of times a page was not found in memory</span>
+                    <p class="stat-title">Page Faults</p>
+                    <p class="stat-value" id="page_miss">0</p>
+                </div>
+                
+                <div class="stat-card tooltip">
+                    <span class="tooltiptext">Number of times a page was found in memory</span>
+                    <p class="stat-title">Page Hits</p>
+                    <p class="stat-value" id="page_hits">0</p>
+                </div>
+                
+                <div class="stat-card tooltip">
+                    <span class="tooltiptext">Percentage of page requests resulting in faults</span>
+                    <p class="stat-title">Miss Rate</p>
+                    <p class="stat-value" id="miss_rate">0%</p>
+                </div>
+                
+                <div class="stat-card tooltip">
+                    <span class="tooltiptext">Percentage of page requests found in memory</span>
+                    <p class="stat-title">Hit Rate</p>
+                    <p class="stat-value" id="hit_rate">0%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    var numberOfFrames, dropDown, inputString, numberOfPages, pageFaults = 0, pageHits = 0, count = 0, missRate, hitRate;
+    var arr = new Array();
+    
+    function showDiv() {
+        document.getElementById("SUM").style.display = "block";
+        // Add visible class after a short delay to trigger animation
+        setTimeout(() => {
+            document.getElementById("SUM").classList.add("visible");
+        }, 100);
+    }
+    
+    function disableButton1() {
+        document.getElementById("btn1").disabled = true;
+        document.getElementById("btn1").style.opacity = "0.6";
+        document.getElementById("btn1").style.cursor = "not-allowed";
+    }
+    
+    function enableButton1() {
+        document.getElementById("btn1").disabled = false;
+        document.getElementById("btn1").style.opacity = "1";
+        document.getElementById("btn1").style.cursor = "pointer";
+    }
+    
+    function reset() {
+        document.getElementById("SUM").style.display = "none";
+        document.getElementById("SUM").classList.remove("visible");
+        var table = document.getElementById("tbl");
+        table.innerHTML = "<thead></thead><tbody></tbody>";
+        pageFaults = 0;
+        pageHits = 0;
+        count = 0;
+        document.getElementById("input_string").value = "";
+        document.getElementById("frame_size").value = "";
+        document.getElementById("drop_down").selectedIndex = 0;
+    }
+    
+    function redirect() {
+        // Implement comparison functionality or redirect to comparison page
+        alert("Comparison feature will be implemented soon!");
+    }
+    
+    function visualize() {
+        inputString = document.getElementById("input_string").value;
+        if(inputString==""){
+            alert("Please enter all fields");
+            reset();
+            enableButton1();
+            return;
+        }
+        arr = inputString.split(' ').map(Number);
+        numberOfPages = arr.length;
+        numberOfFrames = parseInt(document.getElementById("frame_size").value);
+        if(isNaN(numberOfFrames)){
+            alert("Please enter all fields");
+            reset();
+            enableButton1();
+            return;
+        }
+        dropDown = document.getElementById("drop_down").value;
+
+        if (numberOfFrames < 1) {
+            alert("Please choose Number Of Frames greater than 0");
+            reset();
+            enableButton1();
+            return;
+        }
+
+        var table = document.getElementById("tbl");
+        var row = table.insertRow(0);
+        for (let j = 0; j <= (numberOfFrames + 1); j++) {
+            var cell = row.insertCell(j);
+
+            if (j == 0) {
+                cell.innerHTML = "<b>Page Sequence</b>";
+            }
+            else if (j == (numberOfFrames + 1)) {
+                cell.innerHTML = "<b>Page Hit/Miss</b>";
+            }
+            else {
+                cell.innerHTML = `<b>Frame ${j}</b>`;
+            }
+        }
+
+
+        if (dropDown == "FIFO") {
+            var temp = new Array();
+            for (let o = 0; o < numberOfFrames; o++) {
+                temp[o] = -1;
+            }
+
+            for (let m = 0; m < numberOfPages; m++) {
+                let s = 0, k = 0, p;
+
+                for (let n = 0; n < numberOfFrames; n++) {
+                    if (arr[m] == temp[n]) {
+                        s++;
+                        pageHits++;
+                        pageFaults--;
+                    }
+                }
+                pageFaults++;
+
+                if ((pageFaults <= numberOfFrames) && (s == 0)) {
+                    for (p = 0; p < numberOfFrames; p++) {
+                        if (temp[p] == -1)
+                            break;
+                    }
+                    temp[p] = arr[m];
+                }
+                else if (s == 0) {
+                    temp[(pageFaults - 1) % numberOfFrames] = arr[m];
+                }
+
+                row = table.insertRow((count) + 1);
+                cell = row.insertCell((k++));
+                cell.innerHTML = arr[m];
+                count++;
+
+                for (let n = 0; n < numberOfFrames; n++) {
+                    if (temp[n] != -1) {
+                        cell = row.insertCell((k++));
+                        cell.innerHTML = temp[n];
+                    }
+                    else {
+                        cell = row.insertCell((k++));
+                        cell.innerHTML = " - ";
+                    }
+
+                }
+                if (s == 0) {
+                    cell = row.insertCell((k++));
+                    cell.innerHTML = "Miss";
+                    cell.style.backgroundColor = "rgba(239, 68, 68, 0.7)";
+                }
+                else {
+                    cell = row.insertCell((k++));
+                    cell.innerHTML = "Hit";
+                    cell.style.backgroundColor = "rgba(16, 185, 129, 0.7)";
+                }
+            }
+
+            hitRate = (pageHits / numberOfPages) * 100;
+            missRate = (pageFaults / numberOfPages) * 100;
+
+            document.getElementById("page_miss").innerHTML = pageFaults;
+            document.getElementById("page_hits").innerHTML = pageHits;
+            document.getElementById("miss_rate").innerHTML = missRate.toFixed(2) + "%";
+            document.getElementById("hit_rate").innerHTML = hitRate.toFixed(2) + "%";
+        }
+        // Additional algorithms implementation would go here
+    }
+</script>
+</body>
+</html>
