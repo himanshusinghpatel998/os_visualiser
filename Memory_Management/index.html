@@ -31,6 +31,27 @@
 
     <div id="outputContainer" class="output"></div>
   </div>
+  
+<!-- Learn More Button -->
+<div class="center">
+  <button onclick="openModal()">Learn More</button>
+</div>
+
+<!-- Modal -->
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Memory Management Techniques</h2>
+    <h3>MFT (Multiprogramming with Fixed Tasks)</h3>
+    <p>Memory is divided into fixed-size blocks. Each process gets a block. If the process is smaller than the block, space is wasted (internal fragmentation).</p>
+    
+    <h3>MVT (Multiprogramming with Variable Tasks)</h3>
+    <p>Memory is allocated dynamically to processes. It reduces internal fragmentation but may cause external fragmentation over time.</p>
+    
+    <h3>Demand Paging (Virtual Memory)</h3>
+    <p>Processes are divided into pages and only required pages are loaded into memory frames when needed. Reduces memory usage and allows multitasking efficiently.</p>
+  </div>
+</div>
 
   <script src="script.js"></script>
 </body>
