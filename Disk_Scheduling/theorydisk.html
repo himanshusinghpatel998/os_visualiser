@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disk Theory</title>
+    <link rel="stylesheet" href="theory.css">
+</head>
+<body>
+    <header>
+        <h1>Disk Scheduling</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>FCFS</h2>
+            <p>First Come First Serve (FCFS) is a fundamental algorithm in disk scheduling, where the requests arriving first are served first without any prioritization. In the context of disk scheduling, FCFS works by servicing the disk requests in the order they are received. This means that the disk arm moves to the cylinder requested by the first job in the queue, then to the next, and so forth, until all requests are fulfilled. While FCFS is straightforward and easy to implement, it may not always be the most efficient method, especially in scenarios where there's a significant difference in seek times between requests or when there's a mix of high and low priority tasks.</p>
+            <div class="pros-cons">
+                <div>
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>Every request gets a fair chance</li>
+                        <li>No indefinite postponement</li>
+                        <li>Simple to Implement</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Disadvantages</h3>
+                    <ul>
+                        <li>Does not try to optimize seek time</li>
+                        <li>May not provide the best possible service</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>SSTF</h2>
+            <p>Shortest Seek Time First (SSTF) is a disk scheduling algorithm used in computer storage systems to optimize the movement of the disk arm and reduce seek time. The SSTF algorithm selects the request with the shortest seek time from the current head position, prioritizing proximity over other factors like request order or arrival time. By minimizing the seek time, SSTF aims to improve overall disk performance and reduce latency. However, while SSTF is efficient in reducing seek time and improving throughput, it may lead to starvation for requests located farther from the disk arm's current position. Despite this drawback, SSTF remains a widely used disk scheduling algorithm due to its simplicity and effectiveness in certain scenarios.
+            </p>
+            <div class="pros-cons">
+                <div>
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>The average Response Time decreases</li>
+                        <li>Throughput increases</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Disadvantages</h3>
+                    <ul>
+                        <li>Overhead to calculate seek time in advance</li>
+                        <li>Can cause Starvation for a request if it has a higher seek time as compared to incoming requests</li>
+                        <li>The high variance of response time as SSTF favors only some requests</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>SCAN</h2>
+            <p>SCAN operates by moving the disk arm in one direction across the disk surface, serving pending requests along the way until reaching the end, then reverses direction. This back-and-forth movement minimizes seek time and reduces the average response time for disk operations. SCAN ensures fairness by serving requests in a first-come-first-serve manner, thereby preventing starvation of certain requests. However, it may result in increased waiting time for requests located farthest from the current disk arm position, leading to potential performance issues in high-load scenarios.</p>
+            <div class="pros-cons">
+                <div>
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>High throughput</li>
+                        <li>Low variance of response time</li>
+                        <li>Average response time</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Disadvantages</h3>
+                    <ul>
+                        <li>Long waiting time for requests for locations just visited by disk arm</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>C-SCAN</h2>
+            <p>Unlike traditional SCAN algorithms which only move in one direction across the disk, C-SCAN considers the circular nature of the disk and restricts movement to one direction, either towards the end or the beginning of the disk. When the head reaches the end of the disk, it immediately returns to the beginning without servicing any requests in between, thus forming a circular path. This approach minimizes the average seek time by ensuring that the majority of requests are serviced in a contiguous manner. C-SCAN is particularly beneficial in scenarios where most requests are concentrated towards one end of the disk, as it prevents excessive seeks to the opposite end, enhancing overall efficiency.</p>
+            <div class="pros-cons">
+                <div>
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>Provides more uniform wait time compared to SCAN.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Disadvantages</h3>
+                    <ul>
+                        <li>Goes till the end of the disk even if there is no job in that direction</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>LOOK</h2>
+            <p>LOOK Algorithm is similar to the SCAN disk scheduling algorithm except for the difference that the disk arm in spite of going to the end of the disk goes only to the last request to be serviced in front of the head and then reverses its direction from there only. Thus it prevents the extra delay which occurred due to unnecessary traversal to the end of the disk.</p>
+            <div class="pros-cons">
+                <div>
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>Better version of SCAN</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Disadvantages</h3>
+                    <ul>
+                        <li>Struggles from starvation</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>C-LOOK</h2>
+            <p>As LOOK is similar to the SCAN algorithm, in a similar way, C-LOOK is similar to the CSCAN disk scheduling algorithm. In CLOOK, the disk arm in spite of going to the end goes only to the last request to be serviced in front of the head and then from there goes to the other end’s last request. Thus, it also prevents the extra delay which occurred due to unnecessary traversal to the end of the disk.</p>
+            <div class="pros-cons">
+                <div>
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>Better version of C-SCAN</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section>
+            <h2>RSS</h2>
+            <p>It stands for Random Scheduling and just like its name it is natural. It is used in situations where scheduling involves random attributes such as random processing time, random due dates, random weights, and stochastic machine breakdowns this algorithm sits perfectly. Which is why it is usually used for analysis and simulation.</p>
+            <div class="pros-cons">
+                <div>
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>Sometimes random can outperform everything</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Disadvantages</h3>
+                    <ul>
+                        <li>Sometimes anything can outperform random</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section>
+            <h2>LIFO</h2>
+            <p>In LIFO (Last In, First Out) algorithm, the newest jobs are serviced before the existing ones i.e. in order of requests that get serviced the job that is newest or last entered is serviced first, and then the rest in the same order. </p>
+            <div class="pros-cons">
+                <div>
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>Minimizes Response time for some requests</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Disadvantages</h3>
+                    <ul>
+                        <li>Maximises Response time for the other requests</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
