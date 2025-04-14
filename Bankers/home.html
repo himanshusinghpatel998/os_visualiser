@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS VISUALIZER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Black', sans-serif;
+            text-transform: uppercase;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #222;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            letter-spacing: 3px;
+        }
+        
+        .content {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            overflow: hidden;
+        }
+        
+        .deadlock-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            flex: 1;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        h2 {
+            color: #4a55af;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        
+        .deadlock-desc {
+            font-size: 1rem;
+            line-height: 1.6;
+            letter-spacing: 0.8px;
+            overflow: auto;
+            flex: 1;
+            padding-right: 10px;
+        }
+        
+        .options-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            width: 350px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            justify-content: center;
+        }
+        
+        .options-title {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            letter-spacing: 1.5px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .option-btn {
+            background-color: #4a55af;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1.5px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        
+        .option-btn:hover {
+            background-color: #3a4a9f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        }
+        
+        .option-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Scrollbar styling */
+        .deadlock-desc::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .deadlock-desc::-webkit-scrollbar-thumb {
+            background-color: #4a55af;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>OS VISUALIZER</h1>
+    </header>
+    
+    <div class="content">
+        <section class="deadlock-section">
+            <h2>DEADLOCK</h2>
+            <p class="deadlock-desc">
+                DEADLOCK OCCURS WHEN MULTIPLE PROCESSES ARE BLOCKED BECAUSE EACH IS HOLDING A RESOURCE AND WAITING FOR ANOTHER RESOURCE ACQUIRED BY SOME OTHER PROCESS. THIS CREATES A CIRCULAR WAIT CONDITION WHERE NONE OF THE PROCESSES CAN PROCEED. IN OPERATING SYSTEMS, DEADLOCK PREVENTION AND DETECTION ARE CRUCIAL FOR SYSTEM STABILITY AND PERFORMANCE. THE BANKER'S ALGORITHM PROVIDES A SAFE WAY TO MANAGE RESOURCE ALLOCATION WHILE DEADLOCK DETECTION IDENTIFIES EXISTING DEADLOCKS IN THE SYSTEM.
+            </p>
+        </section>
+        
+        <section class="options-section">
+            <h3 class="options-title">SELECT ALGORITHM</h3>
+            <div class="options">
+                <button class="option-btn" onclick="location.href='bankers.html'">BANKER'S ALGORITHM</button>
+                <button class="option-btn" onclick="location.href='detection.html'">DEADLOCK DETECTION ALGORITHM</button>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
