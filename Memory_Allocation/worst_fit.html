@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worst Fit Algorithm Simulation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: #4a55af;
+            color: white;
+            padding: 1.2rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 2rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        nav ul li a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .info-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.2rem;
+            color: #2d3748;
+            font-weight: 700;
+            border-bottom: 2px solid #4a55af;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        h2 {
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem;
+            color: #2d3748;
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+            margin: 1rem 0 0.8rem;
+            color: #2d3748;
+        }
+        
+        p {
+            margin-bottom: 1.2rem;
+            color: #444;
+            font-size: 1.05rem;
+        }
+        
+        .simulation-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .section-divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 1.5rem 0;
+        }
+        
+        .input-section, .output-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4a55af;
+            box-shadow: 0 0 0 3px rgba(74, 85, 175, 0.2);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #4a55af;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(74, 85, 175, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #3a4499;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 85, 175, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: #718096;
+            margin-left: 1rem;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #4a5568;
+        }
+        
+        .memory-block {
+            margin-bottom: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .block-header {
+            background-color: #edf2f7;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            color: #4a5568;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .block-content {
+            display: flex;
+            height: 3rem;
+        }
+        
+        .allocated {
+            background-color: #4a55af;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex: 0 0 auto;
+            padding: 0 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .fragmented {
+            background-color: #f56565;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex: 0 0 auto;
+            padding: 0 8px;
+        }
+        
+        .free {
+            background-color: #c6f6d5;
+            color: #2f855a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex: 0 0 auto;
+            border-left: 1px dashed #a0aec0;
+            padding: 0 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .status-allocated {
+            color: #2f855a;
+            font-weight: 600;
+        }
+        
+        .status-waiting {
+            color: #e53e3e;
+            font-weight: 600;
+        }
+        
+        .memory-visualization {
+            margin-top: 2rem;
+        }
+        
+        .memory-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .legend {
+            display: flex;
+            margin-top: 1rem;
+            gap: 1.5rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .legend-allocated {
+            background-color: #4a55af;
+        }
+        
+        .legend-fragmented {
+            background-color: #f56565;
+        }
+        
+        .legend-free {
+            background-color: #c6f6d5;
+        }
+        
+        .adv-disadv {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .advantages, .disadvantages {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .advantages h3 {
+            color: #2f855a;
+        }
+        
+        .disadvantages h3 {
+            color: #e53e3e;
+        }
+        
+        .advantages ul, .disadvantages ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .advantages li, .disadvantages li {
+            margin-bottom: 0.6rem;
+        }
+        
+        .error-msg {
+            color: #e53e3e;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        footer {
+            background-color: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 1.2rem 0;
+            margin-top: 3rem;
+        }
+        
+        footer p {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="title">MEMORY ALLOCATION VISUALIZER</div>
+        <nav>
+            <ul>
+                <li><a href="memory_allocation_home.html">HOME</a></li>
+                <li><a href="#">ABOUT</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="info-card">
+            <h1>Worst Fit Algorithm</h1>
+            
+            <p>The Worst Fit algorithm allocates the largest available memory block to a process. It searches the entire memory space to find the block with the most free space and allocates it to the process.</p>
+            
+            <p>This approach attempts to leave larger leftover fragments that may be more useful for future allocations. However, it requires scanning the entire memory space for each allocation, which can be slower than other algorithms.</p>
+            
+            <div class="section-divider"></div>
+            
+            <p><strong>How Worst Fit Works:</strong></p>
+            <ol>
+                <li>When a process requests memory, the algorithm scans the entire memory space</li>
+                <li>It identifies the largest free block available</li>
+                <li>It allocates this block to the process, even if it's much larger than needed</li>
+                <li>If the block is larger than needed, it splits the block and creates a new free block with the remaining space</li>
+                <li>If no suitable block is found, the process must wait</li>
+            </ol>
+            
+            <div class="section-divider"></div>
+            
+            <div class="adv-disadv">
+                <div class="advantages">
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li><strong>Reduced external fragmentation:</strong> By placing processes in the largest available spaces, it tends to leave larger unused portions that are more useful for future allocations.</li>
+                        <li><strong>Better for variable-sized allocations:</strong> Works well in environments where process sizes vary significantly.</li>
+                        <li><strong>Maximizes leftover space:</strong> Creates larger chunks of free memory, which can be more valuable for later allocations.</li>
+                        <li><strong>Potentially fewer blocks needed:</strong> By using larger blocks more efficiently, the system might need fewer total blocks.</li>
+                        <li><strong>Good for unpredictable workloads:</strong> Performs well when future memory requirements are uncertain and vary in size.</li>
+                    </ul>
+                </div>
+                
+                <div class="disadvantages">
+                    <h3>Disadvantages</h3>
+                    <ul>
+                        <li><strong>Higher computational overhead:</strong> Requires searching the entire memory space for each allocation to find the largest block.</li>
+                        <li><strong>Internal fragmentation:</strong> Can lead to significant internal fragmentation as small processes get allocated to very large blocks.</li>
+                        <li><strong>Inefficient for sequential allocations:</strong> May perform poorly if many small processes are allocated sequentially.</li>
+                        <li><strong>Speed concerns:</strong> Slower than First Fit as it must search the entire memory space before making an allocation decision.</li>
+                        <li><strong>Resource intensive:</strong> Less efficient use of memory for predominantly small processes, as it preferentially allocates the largest spaces available.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="simulation-area">
+            <div class="input-section">
+                <h2>Simulation Input</h2>
+                
+                <div class="form-group">
+                    <label for="memory-blocks">Memory Blocks (sizes separated by comma)</label>
+                    <input type="text" id="memory-blocks" placeholder="e.g., 100, 500, 200, 300, 600" value="100, 500, 200, 300, 600">
+                    <div id="memory-blocks-error" class="error-msg">Please enter valid memory block sizes.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="processes">Process Sizes (separated by comma)</label>
+                    <input type="text" id="processes" placeholder="e.g., 212, 417, 112, 426" value="212, 417, 112, 426">
+                    <div id="processes-error" class="error-msg">Please enter valid process sizes.</div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn" id="simulate-btn">Simulate</button>
+                    <button class="btn btn-secondary" id="reset-btn">Reset</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2>Allocation Results</h2>
+                
+                <table id="allocation-table">
+                    <thead>
+                        <tr>
+                            <th>Process</th>
+                            <th>Size</th>
+                            <th>Block Allocated</th>
+                            <th>Fragmentation</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allocation-tbody">
+                        <!-- Table rows will be dynamically generated here -->
+                    </tbody>
+                </table>
+                
+                <div class="memory-visualization">
+                    <h2>Memory Visualization</h2>
+                    
+                    <div class="memory-container" id="memory-container">
+                        <!-- Memory blocks will be dynamically generated here -->
+                    </div>
+                    
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color legend-allocated"></div>
+                            <span>Allocated</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-fragmented"></div>
+                            <span>Internal Fragmentation</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-free"></div>
+                            <span>Free Space</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Memory Allocation Algorithms Simulator &copy; 2025</p>
+    </footer>
+    
+    <script>
+        // Function to parse input string into array of numbers
+        function parseInputToArray(inputStr) {
+            return inputStr.split(',')
+                .map(item => item.trim())
+                .filter(item => item !== '')
+                .map(item => parseInt(item, 10))
+                .filter(num => !isNaN(num) && num > 0);
+        }
+        
+        // Worst Fit Algorithm Implementation
+        function worstFitAlgorithm(memoryBlocks, processes) {
+            // Create a copy of memory blocks to work with
+            const memory = [...memoryBlocks];
+            
+            // Initialize an array to track allocations
+            const allocations = [];
+            
+            // Initialize an array to track the remaining space in each block
+            const remainingSpace = [...memory];
+            
+            // Keep track of which process is allocated to which block
+            const blockAllocations = Array(memory.length).fill().map(() => []);
+            
+            // Process each process request
+            for (let i = 0; i < processes.length; i++) {
+                const processSize = processes[i];
+                let allocated = false;
+                
+                let worstFitIndex = -1;
+                let worstFitSize = -1;
+                
+                // Find the block with the largest free space (worst fit)
+                for (let j = 0; j < remainingSpace.length; j++) {
+                    if (remainingSpace[j] >= processSize && remainingSpace[j] > worstFitSize) {
+                        worstFitIndex = j;
+                        worstFitSize = remainingSpace[j];
+                    }
+                }
+                
+                // If a suitable block was found
+                if (worstFitIndex !== -1) {
+                    // Allocate the process to this block
+                    remainingSpace[worstFitIndex] -= processSize;
+                    blockAllocations[worstFitIndex].push({
+                        processId: i,
+                        processSize: processSize
+                    });
+                    
+                    // Record the allocation
+                    allocations.push({
+                        processId: i,
+                        processSize: processSize,
+                        blockId: worstFitIndex,
+                        blockSize: memory[worstFitIndex],
+                        fragmentation: remainingSpace[worstFitIndex]
+                    });
+                    
+                    allocated = true;
+                }
+                
+                // If no suitable block was found
+                if (!allocated) {
+                    allocations.push({
+                        processId: i,
+                        processSize: processSize,
+                        blockId: -1,
+                        blockSize: -1,
+                        fragmentation: -1
+                    });
+                }
+            }
+            
+            return {
+                allocations: allocations,
+                remainingSpace: remainingSpace,
+                blockAllocations: blockAllocations
+            };
+        }
+        
+        // Function to render the allocation table
+        function renderAllocationTable(allocations, processes) {
+            const tbody = document.getElementById('allocation-tbody');
+            tbody.innerHTML = '';
+            
+            for (let i = 0; i < allocations.length; i++) {
+                const allocation = allocations[i];
+                const row = document.createElement('tr');
+                
+                // Process ID
+                const tdProcessId = document.createElement('td');
+                tdProcessId.textContent = `P${allocation.processId + 1}`;
+                row.appendChild(tdProcessId);
+                
+                // Process Size
+                const tdProcessSize = document.createElement('td');
+                tdProcessSize.textContent = `${allocation.processSize} KB`;
+                row.appendChild(tdProcessSize);
+                
+                // Block Allocated
+                const tdBlockAllocated = document.createElement('td');
+                if (allocation.blockId >= 0) {
+                    tdBlockAllocated.textContent = `Block ${allocation.blockId + 1} (${allocation.blockSize} KB)`;
+                } else {
+                    tdBlockAllocated.textContent = '-';
+                }
+                row.appendChild(tdBlockAllocated);
+                
+                // Fragmentation
+                const tdFragmentation = document.createElement('td');
+                if (allocation.blockId >= 0) {
+                    tdFragmentation.textContent = `${allocation.fragmentation} KB`;
+                } else {
+                    tdFragmentation.textContent = '-';
+                }
+                row.appendChild(tdFragmentation);
+                
+                // Status
+                const tdStatus = document.createElement('td');
+                if (allocation.blockId >= 0) {
+                    tdStatus.textContent = 'Allocated';
+                    tdStatus.className = 'status-allocated';
+                } else {
+                    tdStatus.textContent = 'Not Allocated';
+                    tdStatus.className = 'status-waiting';
+                }
+                row.appendChild(tdStatus);
+                
+                tbody.appendChild(row);
+            }
+        }
+        
+        // Function to render the memory visualization
+        function renderMemoryVisualization(memoryBlocks, blockAllocations, remainingSpace) {
+            const container = document.getElementById('memory-container');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < memoryBlocks.length; i++) {
+                const blockSize = memoryBlocks[i];
+                const allocations = blockAllocations[i];
+                
+                const memoryBlock = document.createElement('div');
+                memoryBlock.className = 'memory-block';
+                
+                // Block header
+                const blockHeader = document.createElement('div');
+                blockHeader.className = 'block-header';
+                
+                const blockName = document.createElement('span');
+                blockName.textContent = `Block ${i + 1}`;
+                
+                const blockSizeSpan = document.createElement('span');
+                blockSizeSpan.textContent = `${blockSize} KB`;
+                
+                blockHeader.appendChild(blockName);
+                blockHeader.appendChild(blockSizeSpan);
+                memoryBlock.appendChild(blockHeader);
+                
+                // Block content
+                const blockContent = document.createElement('div');
+                blockContent.className = 'block-content';
+                
+                if (allocations.length === 0) {
+                    // Block is entirely free
+                    const freeSpace = document.createElement('div');
+                    freeSpace.className = 'free';
+                    freeSpace.style.width = '100%';
+                    freeSpace.textContent = 'Free';
+                    blockContent.appendChild(freeSpace);
+                } else {
+                    // Block has allocations
+                    let usedSpace = 0;
+                    
+                    // Add each allocation
+                    for (const allocation of allocations) {
+                        const allocatedDiv = document.createElement('div');
+                        allocatedDiv.className = 'allocated';
+                        const percentWidth = (allocation.processSize / blockSize) * 100;
+                        allocatedDiv.style.width = `${percentWidth}%`;
+                        allocatedDiv.textContent = `P${allocation.processId + 1} (${allocation.processSize} KB)`;
+                        blockContent.appendChild(allocatedDiv);
+                        
+                        usedSpace += allocation.processSize;
+                    }
+                    
+                    // Add fragmentation if there's remaining space
+                    if (remainingSpace[i] > 0) {
+                        const fragmentedDiv = document.createElement('div');
+                        fragmentedDiv.className = 'fragmented'; // Changed from 'free' to 'fragmented'
+                        const percentWidth = (remainingSpace[i] / blockSize) * 100;
+                        fragmentedDiv.style.width = `${percentWidth}%`;
+                        fragmentedDiv.textContent = `${remainingSpace[i]} KB`;
+                        blockContent.appendChild(fragmentedDiv);
+                    }
+                }
+                
+                memoryBlock.appendChild(blockContent);
+                container.appendChild(memoryBlock);
+            }
+        }
+        
+        // Function to validate inputs
+        function validateInputs() {
+            const memoryBlocksInput = document.getElementById('memory-blocks').value;
+            const processesInput = document.getElementById('processes').value;
+            
+            const memoryBlocksError = document.getElementById('memory-blocks-error');
+            const processesError = document.getElementById('processes-error');
+            
+            let isValid = true;
+            
+            // Validate memory blocks
+            const memoryBlocks = parseInputToArray(memoryBlocksInput);
+            if (memoryBlocks.length === 0) {
+                memoryBlocksError.style.display = 'block';
+                isValid = false;
+            } else {
+                memoryBlocksError.style.display = 'none';
+            }
+            
+            // Validate processes
+            const processes = parseInputToArray(processesInput);
+            if (processes.length === 0) {
+                processesError.style.display = 'block';
+                isValid = false;
+            } else {
+                processesError.style.display = 'none';
+            }
+            
+            return {
+                isValid,
+                memoryBlocks,
+                processes
+            };
+        }
+        
+        // Handle simulate button click
+        document.getElementById('simulate-btn').addEventListener('click', function() {
+            // Validate inputs
+            const { isValid, memoryBlocks, processes } = validateInputs();
+            
+            if (!isValid) return;
+            
+            // Run the Worst Fit algorithm
+            const result = worstFitAlgorithm(memoryBlocks, processes);
+            
+            // Render the results
+            renderAllocationTable(result.allocations, processes);
+            renderMemoryVisualization(memoryBlocks, result.blockAllocations, result.remainingSpace);
+        });
+        
+        // Handle reset button click
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            document.getElementById('memory-blocks').value = '100, 500, 200, 300, 600';
+            document.getElementById('processes').value = '212, 417, 112, 426';
+            
+            document.getElementById('memory-blocks-error').style.display = 'none';
+            document.getElementById('processes-error').style.display = 'none';
+            
+            // Trigger simulation with default values
+            document.getElementById('simulate-btn').click();
+        });
+        
+        // Initialize the simulation with default values when the page loads
+        window.addEventListener('load', function() {
+            document.getElementById('simulate-btn').click();
+        });
+    </script>
+</body>
+</html>
