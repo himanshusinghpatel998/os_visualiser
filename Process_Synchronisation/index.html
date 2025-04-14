@@ -308,9 +308,9 @@
             <li class="dropdown">
                 <a href="#" class="dropbtn">Algorithms <i class="fas fa-caret-down"></i></a>
                 <div class="dropdown-content">
-                    <a href="../process_scheduling/process.html"><i class="fas fa-chart-line"></i> Process Scheduling</a>
+                    <a href="../Cpu_Scheduling/home.html"><i class="fas fa-chart-line"></i> Process Scheduling</a>
                     <a href="../hashingAlgos/security.html"><i class="fas fa-lock"></i> Security Algorithms</a>
-                    <a href="../Deadlock/bankers.html"><i class="fas fa-money-bill-wave"></i> Bankers Algorithm</a>
+                    <a href="../Bankers/banker.html"><i class="fas fa-money-bill-wave"></i> Bankers Algorithm</a>
                     <a href="../Memory_Management/Fit.html"><i class="fas fa-memory"></i> Fit Algorithms</a>
                     <a href="../Page_Replacement/page_replacement_home.html"><i class="fas fa-file-alt"></i> Page Replacement</a>
                     <a href="../Disk/disk.html"><i class="fas fa-hdd"></i> Disk Scheduling</a>
@@ -350,7 +350,7 @@
     </section>
 
     <footer>
-        <p>© 2023 OS Visualizer</p>
+        <p>© 2025 OS Visualizer</p>
         <p>Operating System Concepts Visualized</p>
     </footer>
 
@@ -361,19 +361,23 @@
             button.classList.add('floating');
         });
 
-        // Smooth scrolling for navigation
         document.querySelectorAll('nav a').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if(targetId === '#') {
                 e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
+                return;
+            }
+            
+            // Only prevent default if it's an on-page anchor
+            if(targetId.startsWith('#')) {
+                e.preventDefault();
                 document.querySelector(targetId).scrollIntoView({
                     behavior: 'smooth'
                 });
-            });
+            }
         });
+    });
 
         // Highlight current page in navigation
         const currentPage = window.location.pathname.split('/').pop();
