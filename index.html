@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OS Modules</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #003984;
+      color: #000;
+    }
+
+    header {
+      background: linear-gradient(135deg, #003984 , #003984);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-around;
+      padding: 40px 20px;
+      flex-wrap: wrap;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 25px 20px;
+      width: 200px;
+      transition: transform 0.2s ease-in-out;
+      cursor: pointer;
+    }
+
+    .card i {
+      font-size: 30px;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .card small {
+      display: block;
+      color: #555;
+      font-weight: normal;
+      margin-top: 5px;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>OS Simulator</h1>
+    <p>Interactive Operating System Concepts</p>
+  </header>
+
+  <div class="container">
+    <div class="column">
+      <div class="card"><i class="bi bi-gear-fill"></i><p>SYSTEM CALLS<br><small>Module 1</small></p></div>
+      <div class="card" onclick="window.location.href='Bankers/home.html';">
+        <i class="bi bi-exclamation-triangle-fill"></i><p>DEADLOCKS<br><small>Module 4</small></p> </div>
+      <div class="card"><i class="bi bi-arrow-left-right"></i><p>PAGE REPLACEMENT<br><small>Module 7</small></p></div>
+      <div class="card"><i class="bi bi-folder-fill"></i><p>HIERARCHICAL FILE ORG<br><small>Module 10</small></p></div>
+    </div>
+
+    <div class="column">
+      <div class="card" onclick="window.location.href='Cpu_Scheduling/home.html';">
+        <i class="bi bi-cpu-fill"></i><p>CPU SCHEDULING<br><small>Module 2</small></p>
+      </div>
+      
+    <div class="card" onclick="window.location.href='Memory_Management/index.html';">
+      <i class="bi bi-memory"></i><p>MEMORY MGMT TECHNIQUES<br><small>Module 5</small></p>
+    </div>
+      <div class="card" onclick="window.location.href='Paging_Segmentation_and_AdvanceAlgorithms/index.html';">
+        <i class="bi bi-sliders"></i><p>PAGING & SEGMENTATION ALGORITHMS<br><small>Module 11</small></p></div>
+    </div>
+
+    <div class="column">
+      <div class="card" onclick="window.location.href='Process_Synchronisation/index.html';">
+        <i class="bi bi-lock-fill"></i><p>PROCESS SYNC<br><small>Module 3</small></p>
+      </div>
+
+      
+      <div class="card"><i class="bi bi-grid-fill"></i><p>CONTIGUOUS MEMORY<br><small>Module 6</small></p></div>
+      <div class="card" onclick="window.location.href='Disk_Scheduling/disk.html';">
+        <i class="bi bi-disc-fill"></i>
+        <p>DISK SCHEDULING<br><small>Module 8</small></p>
+      </div>
+
+      <div class="card" onclick="window.location.href='file_allocation/index.html';">
+        <i class="bi bi-folder2-open"></i>
+        <p>FILE ALLOCATION<br><small>Module 9</small></p>
+      </div>
+      
+    </div>
+  </div>
+<center></center><footer class="bg-blue-900 text-center text-white py-4 mt-10">
+  OS Simulator · Made by Roll Numbers 231CS121-231CS130 & 201CS151
+</footer></center>
+  <script>
+    // Add click handlers to all cards
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', function() {
+        // Default action - can be overridden by specific onclick attributes
+        if(!this.getAttribute('onclick')) {
+          alert('Module coming soon!');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contiguous Allocation</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>📏 Contiguous Allocation</h1>
+    <a href="index.html">
+      <button class="back-button">← Back to Home</button>
+    </a>
+    
+    <!-- Theory Section -->
+    <div class="section theory">
+      <h2>🧠 Theory</h2>
+      <p>
+        In <strong>Contiguous Allocation</strong>, each file is stored in a sequence of adjacent memory blocks on the disk.
+        This method is simple and allows fast access using the <em>base address + offset</em> formula.
+        Files are stored linearly, but managing free space can become complex over time.
+      </p>
+      
+      <h3>📝 How it Works</h3>
+      <p>
+        Contiguous allocation finds a continuous space (a sequence of adjacent blocks) on the disk that is large enough to hold the file.
+        Once found, the file occupies all the blocks in that region.
+      </p>
+      <ul>
+        <li><strong>Example</strong>: If a file requires 5 blocks and blocks 3–7 are free, the file is allocated to those blocks.</li>
+      </ul>
+      
+      <h3>🔍 Accessing Files</h3>
+      <p>
+        The operating system uses the starting block and the file size (offset) to compute the location of any part of the file.
+      </p>
+      <ul>
+        <li><strong>Formula</strong>: <code>Block Address = Start Address + Offset</code></li>
+        <li>This allows direct access to file contents.</li>
+      </ul>
+      
+      <h3>✅ Advantages</h3>
+      <ul>
+        <li>Fast access due to sequential storage.</li>
+        <li>Simple metadata management (only start and size needed).</li>
+        <li>Effective for sequential access such as streaming.</li>
+      </ul>
+      
+      <h3>❌ Disadvantages</h3>
+      <ul>
+        <li>External fragmentation: free blocks become scattered.</li>
+        <li>Fixed file size: difficult to expand files without relocation.</li>
+        <li>Potential wastage if allocated space exceeds the file size.</li>
+      </ul>
+    </div>
+    
+    <!-- Simulator Section -->
+    <div class="section simulator">
+      <h2>🧪 Simulator</h2>
+      <!-- Pre-filled Blocks Input -->
+      <div class="input-section">
+        <h3>Enter Pre-filled Blocks</h3>
+        <input type="text" id="preFilledBlocks" placeholder="Enter pre-filled blocks (e.g., 2, 4, 6)" />
+        <button onclick="updatePreFilledInput()">Update Pre-filled Blocks</button>
+      </div>
+
+      <form id="fileForm">
+        <input type="text" id="filename" placeholder="File Name" required />
+        <input type="number" id="filesize" placeholder="Size (in blocks)" required />
+        <button type="submit">Allocate</button>
+      </form>
+      <!-- The container for the blocks uses the same style as other pages -->
+      <div id="blockContainer" class="block-container"></div>
+    </div>
+  </div>
+
+  <script>
+    const totalBlocks = 51;
+    const disk = Array(totalBlocks).fill(null);
+    const container = document.getElementById("blockContainer");
+
+    // Draw all blocks in the container. Add a click event listener to toggle fill.
+    function drawBlocks() {
+      container.innerHTML = "";
+      for (let i = 0; i < totalBlocks; i++) {
+        const block = document.createElement("div");
+        block.classList.add("block");
+        // Display the file name if allocated, or the block number otherwise.
+        block.textContent = disk[i] ? disk[i] : i;
+        if (disk[i]) {
+          block.classList.add("filled");
+        }
+        // Attach a click event listener to toggle pre-filled state.
+        block.addEventListener("click", function() {
+          // Toggle the block: if null, mark as "Filled"; if "Filled", clear it.
+          if (disk[i] === null) {
+            disk[i] = 'Filled';
+          } else if (disk[i] === 'Filled') {
+            disk[i] = null;
+          }
+          drawBlocks();
+          updatePreFilledInput();
+        });
+        container.appendChild(block);
+      }
+    }
+
+    // Function to update the pre-filled blocks input with indices that are marked as "Filled"
+    function updatePreFilledInput() {
+      const preFilledInput = document.getElementById("preFilledBlocks");
+      const filledIndices = [];
+      for (let i = 0; i < totalBlocks; i++) {
+        if (disk[i] === 'Filled') {
+          filledIndices.push(i);
+        }
+      }
+      preFilledInput.value = filledIndices.join(", ");
+    }
+
+    // Find contiguous free space of a given size.
+    function findContiguousSpace(size) {
+      let count = 0, start = -1;
+      for (let i = 0; i < totalBlocks; i++) {
+        if (!disk[i]) {
+          if (count === 0) start = i;
+          count++;
+          if (count === size) return start;
+        } else {
+          count = 0;
+        }
+      }
+      return -1;
+    }
+
+    // Animate file allocation (optional step-by-step effect)
+    function animateFileAllocation(name, start, size) {
+      let filled = 0;
+      for (let i = start; i < start + size; i++) {
+        setTimeout(() => {
+          disk[i] = name;
+          drawBlocks();
+        }, 500 * filled);
+        filled++;
+      }
+    }
+
+    // Event listener for file allocation form
+    document.getElementById("fileForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("filename").value;
+      const size = parseInt(document.getElementById("filesize").value);
+      const start = findContiguousSpace(size);
+      if (start !== -1) {
+        animateFileAllocation(name, start, size);
+      } else {
+        alert("Not enough contiguous space!");
+      }
+      e.target.reset();
+    });
+
+    // Initial drawing of blocks
+    drawBlocks();
+  </script>
+</body>
+</html>

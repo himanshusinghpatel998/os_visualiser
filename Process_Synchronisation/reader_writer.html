@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OS Visualizer - Reader-Writer Problem</title>
+  <style>
+    :root {
+      --primary-color: #6a11cb;
+      --secondary-color: #2575fc;
+      --accent-color: #ff3d00;
+      --dark-bg: #1a1a2e;
+      --darker-bg: #16213e;
+      --text-color: #f1f1f1;
+      --highlight-color: #00b4d8;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--dark-bg);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 1rem 0;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-bar {
+      background-color: var(--darker-bg);
+      padding: 0.8rem 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .nav-link {
+      color: var(--text-color);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--highlight-color);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 30px;
+      background-color: var(--darker-bg);
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+      color: var(--highlight-color);
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+    }
+
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      min-width: 180px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    #output {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      min-height: 100px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      border-left: 4px solid var(--highlight-color);
+    }
+
+    .status-indicator {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+
+    .status-box {
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.3);
+      flex: 1;
+      margin: 0 10px;
+    }
+
+    .status-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--highlight-color);
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      background-color: var(--darker-bg);
+      color: rgba(255, 255, 255, 0.7);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>OS Visualizer</h1>
+  </div>
+
+  
+  <div class="container">
+    <h2>Reader-Writer Problem Simulation</h2>
+
+    <div class="status-indicator">
+      <div class="status-box">
+        <div>Active Readers</div>
+        <div class="status-value" id="readers-count">0</div>
+      </div>
+      <div class="status-box">
+        <div>Active Writers</div>
+        <div class="status-value" id="writers-count">0</div>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <button onclick="startReading()">Start Reading</button>
+      <button onclick="stopReading()">Stop Reading</button>
+      <button onclick="startWriting()">Start Writing</button>
+      <button onclick="stopWriting()">Stop Writing</button>
+    </div>
+
+    <div id="output"></div>
+  </div>
+
+  <footer>
+    OS Visualizer &copy; 2023 | Understanding Operating System Concepts
+  </footer>
+
+  <script>
+    let readersCount = 0;
+    let writersCount = 0;
+    let reading = false;
+    let writing = false;
+
+    function updateStatus() {
+      document.getElementById('readers-count').textContent = readersCount;
+      document.getElementById('writers-count').textContent = writersCount;
+    }
+
+    function startReading() {
+      if (!writing) {
+        readersCount++;
+        reading = true;
+        updateOutput('Reader ' + readersCount + ' started reading.');
+        updateStatus();
+      } else {
+        updateOutput('Cannot read while a writer is writing.');
+      }
+    }
+
+    function stopReading() {
+      if (reading && readersCount > 0) {
+        updateOutput('Reader ' + readersCount + ' stopped reading.');
+        readersCount--;
+        if (readersCount === 0) {
+          reading = false;
+        }
+        updateStatus();
+      } else {
+        updateOutput('No readers are currently reading.');
+      }
+    }
+
+    function startWriting() {
+      if (reading || writing) {
+        updateOutput('Cannot write while readers are reading or another writer is writing.');
+      } else {
+        writersCount++;
+        writing = true;
+        updateOutput('Writer ' + writersCount + ' started writing.');
+        updateStatus();
+      }
+    }
+
+    function stopWriting() {
+      if (writing) {
+        writing = false;
+        updateOutput('Writer ' + writersCount + ' stopped writing.');
+        writersCount--;
+        updateStatus();
+      } else {
+        updateOutput('No writer is currently writing.');
+      }
+    }
+
+    function updateOutput(message) {
+      const output = document.getElementById('output');
+      const timestamp = new Date().toLocaleTimeString();
+      output.innerHTML += `[${timestamp}] ${message}<br>`;
+      output.scrollTop = output.scrollHeight;
+    }
+  </script>
+</body>
+
+</html>

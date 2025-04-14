@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producer Consumer Problem</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a55af;
+            --primary-dark: #4500a8;
+            --secondary: #03DAC6;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --danger: #dc3545;
+            --success: #28a745;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f7;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background-color: var(--primary);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 1rem;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container-main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .title {
+            color: var(--primary);
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .simulation-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .actors {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .actor {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .actor-img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            transition: all 0.3s ease;
+        }
+
+        .actor-label {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary);
+            background-color: rgba(98, 0, 234, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
+
+        .control-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .control-btn.active {
+            background-color: var(--danger);
+        }
+
+        .buffer-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem 0;
+        }
+
+        .buffer-slots {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .buffer-slot {
+            width: 60px;
+            height: 80px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .buffer-slot img {
+            max-width: 90%;
+            max-height: 90%;
+            transition: all 0.3s ease;
+        }
+
+        .buffer-slot::after {
+            content: attr(data-index);
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .stat-box {
+            background-color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .wiki-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .wiki-btn:hover {
+            background-color: var(--primary-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .alert-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 300px;
+            display: none;
+        }
+
+        footer {
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+        background-color: var(--darker-bg);
+        color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .actors {
+                flex-direction: column;
+                align-items: center;
+                gap: 2rem;
+            }
+
+            .buffer-slots {
+                gap: 0.5rem;
+            }
+
+            .buffer-slot {
+                width: 40px;
+                height: 60px;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="container-main">
+        <h1 class="title">Producer-Consumer Problem Visualization</h1>
+
+        <div class="simulation-area">
+            <div class="actors">
+                <div class="actor">
+                    <div class="actor-label" id="producer-label">PRODUCER</div>
+                    <img id="producer-img" src="includes/producer_consumer_items/popcornmaking-0.png" class="actor-img">
+                    <button id="producer-btn" class="control-btn" onclick="toggleProducer(this)">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+
+                <div class="actor">
+                    <div class="actor-label" id="consumer-label">CONSUMER</div>
+                    <img id="consumer-img" src="includes/producer_consumer_items/popcornConsuming-0.png" class="actor-img">
+                    <button id="consumer-btn" class="control-btn" onclick="toggleConsumer(this)">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="buffer-container">
+                <h4 class="text-center mb-3" style="color: var(--primary);">Buffer (Size: 10)</h4>
+                <div class="buffer-slots">
+                    <div class="buffer-slot" data-index="1" id="buffer-1">
+                        <img src="includes/producer_consumer_items/popcornempty.png">
+                    </div>
+                    <div class="buffer-slot" data-index="2" id="buffer-2">
+                        <img src="includes/producer_consumer_items/popcornempty.png">
+                    </div>
+                    <div class="buffer-slot" data-index="3" id="buffer-3">
+                        <img src="includes/producer_consumer_items/popcornempty.png">
+                    </div>
+                    <div class="buffer-slot" data-index="4" id="buffer-4">
+                        <img src="includes/producer_consumer_items/popcornempty.png">
+                    </div>
+                    <div class="buffer-slot" data-index="5" id="buffer-5">
+                        <img src="includes/producer_consumer_items/popcornempty.png">
+                    </div>
+                    <div class="buffer-slot" data-index="6" id="buffer-6">
+                        <img src="includes/producer_consumer_items/popcornempty.png">
+                    </div>
+                    <div class="buffer-slot" data-index="7" id="buffer-7">
+                        <img src="includes/producer_consumer_items/popcornempty.png">
+                    </div>
+                    <div class="buffer-slot" data-index="8" id="buffer-8">
+                        <img src="includes/producer_consumer_items/popcornempty.png">
+                    </div>
+                    <div class="buffer-slot" data-index="9" id="buffer-9">
+                        <img src="includes/producer_consumer_items/popcornempty.png">
+                    </div>
+                    <div class="buffer-slot" data-index="10" id="buffer-10">
+                        <img src="includes/producer_consumer_items/popcornempty.png">
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-label">Items in Buffer</div>
+                    <div class="stat-value" id="counter">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Producer Status</div>
+                    <div class="stat-value" id="producer-status">Idle</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Consumer Status</div>
+                    <div class="stat-value" id="consumer-status">Idle</div>
+                </div>
+            </div>
+
+            <a href="./pc_wiki.html" class="wiki-btn">
+                <i class="fas fa-book"></i> Learn More
+            </a>
+        </div>
+    </div>
+
+    <div class="alert-message alert alert-dismissible fade show" role="alert">
+        <span id="alert-text"></span>
+        <button type="button" class="btn-close" onclick="hideAlert()"></button>
+    </div>
+
+    <footer>
+        OS Visualizer &copy; 2025 | Understanding Operating System Concepts
+      </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Same logic as original, just with modernized UI
+        var start = 0, end = 0, count = 0;
+        var producerActive = false, consumerActive = false;
+        var producerInterval, consumerInterval;
+
+        function showAlert(message, type = 'info') {
+            const alert = document.querySelector('.alert-message');
+            const alertText = document.getElementById('alert-text');
+            
+            alert.className = `alert-message alert alert-${type} alert-dismissible fade show`;
+            alertText.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(hideAlert, 3000);
+        }
+
+        function hideAlert() {
+            document.querySelector('.alert-message').style.display = 'none';
+        }
+
+        function toggleProducer(btn) {
+            if (!consumerActive && count !== 10) {
+                if (!producerActive) {
+                    // Start producing
+                    producerActive = true;
+                    btn.innerHTML = '<i class="fas fa-pause"></i>';
+                    btn.classList.add('active');
+                    
+                    document.getElementById("producer-img").src = "includes/producer_consumer_items/popcornmaking.gif";
+                    document.getElementById("producer-label").textContent = "PRODUCING";
+                    document.getElementById("producer-status").textContent = "Active";
+                    document.getElementById("producer-status").style.color = "var(--success)";
+                    
+                    producerInterval = setInterval(function() {
+                        if (producerActive) {
+                            const slotId = `buffer-${end + 1}`;
+                            count++;
+                            document.getElementById(slotId).innerHTML = 
+                                '<img src="includes/producer_consumer_items/popcorn.jpg">';
+                            document.getElementById("counter").textContent = count;
+                            end = (end + 1) % 10;
+                            
+                            if (count === 10) {
+                                stopProducer();
+                                showAlert("Buffer is full! Cannot produce more items.", 'warning');
+                            }
+                        }
+                    }, 1000);
+                } else {
+                    // Pause producing
+                    stopProducer();
+                }
+            } else if (count === 10) {
+                showAlert("Buffer is full! Cannot produce more items.", 'warning');
+            } else {
+                showAlert("Cannot produce while consumer is active!", 'danger');
+            }
+        }
+
+        function stopProducer() {
+            producerActive = false;
+            const btn = document.getElementById("producer-btn");
+            btn.innerHTML = '<i class="fas fa-play"></i>';
+            btn.classList.remove('active');
+            
+            document.getElementById("producer-img").src = "includes/producer_consumer_items/popcornmaking-0.png";
+            document.getElementById("producer-label").textContent = "PRODUCER";
+            document.getElementById("producer-status").textContent = "Idle";
+            document.getElementById("producer-status").style.color = "var(--dark)";
+            
+            clearInterval(producerInterval);
+        }
+
+        function toggleConsumer(btn) {
+            if (!producerActive) {
+                if (!consumerActive && count > 0) {
+                    // Start consuming
+                    consumerActive = true;
+                    btn.innerHTML = '<i class="fas fa-pause"></i>';
+                    btn.classList.add('active');
+                    
+                    document.getElementById("consumer-img").src = "includes/producer_consumer_items/popcornConsuming.gif";
+                    document.getElementById("consumer-label").textContent = "CONSUMING";
+                    document.getElementById("consumer-status").textContent = "Active";
+                    document.getElementById("consumer-status").style.color = "var(--success)";
+                    
+                    consumerInterval = setInterval(function() {
+                        if (consumerActive) {
+                            const slotId = `buffer-${start + 1}`;
+                            count--;
+                            document.getElementById(slotId).innerHTML = 
+                                '<img src="includes/producer_consumer_items/popcornempty.png">';
+                            document.getElementById("counter").textContent = count;
+                            start = (start + 1) % 10;
+                            
+                            if (count === 0) {
+                                stopConsumer();
+                                showAlert("Buffer is empty! Nothing to consume.", 'warning');
+                            }
+                        }
+                    }, 1000);
+                } else if (consumerActive) {
+                    // Pause consuming
+                    stopConsumer();
+                }
+            } else if (count === 0) {
+                showAlert("Buffer is empty! Nothing to consume.", 'warning');
+            } else {
+                showAlert("Cannot consume while producer is active!", 'danger');
+            }
+        }
+
+        function stopConsumer() {
+            consumerActive = false;
+            const btn = document.getElementById("consumer-btn");
+            btn.innerHTML = '<i class="fas fa-play"></i>';
+            btn.classList.remove('active');
+            
+            document.getElementById("consumer-img").src = "includes/producer_consumer_items/popcornConsuming-0.png";
+            document.getElementById("consumer-label").textContent = "CONSUMER";
+            document.getElementById("consumer-status").textContent = "Idle";
+            document.getElementById("consumer-status").style.color = "var(--dark)";
+            
+            clearInterval(consumerInterval);
+        }
+    </script>
+</body>
+
+</html>

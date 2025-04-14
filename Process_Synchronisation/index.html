@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Synchronization Simulations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a55af;
+            --primary-dark: #3700b3;
+            --primary-light: #bb86fc;
+            --secondary: #fcba28;
+            --secondary-dark: #f8a600;
+            --background: #f5f5f7;
+            --surface: #ffffff;
+            --text: #121212;
+            --text-light: #f5f5f5;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        nav {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .logo {
+            color: var(--surface);
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        li {
+            margin: 0 15px;
+            position: relative;
+        }
+
+        li a {
+            color: var(--surface);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: var(--transition);
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--surface);
+            min-width: 250px;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            border-radius: 5px;
+            padding: 10px 0;
+            transform: translateY(10px);
+            transition: var(--transition);
+            opacity: 0;
+        }
+
+        .dropdown-content a {
+            color: var(--text);
+            padding: 12px 20px;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--primary-light);
+            color: var(--surface);
+            transform: translateX(5px);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://source.unsplash.com/random/1600x900/?technology');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%236200ea" fill-opacity="1" d="M0,192L60,186.7C120,181,240,171,360,181.3C480,192,600,224,720,213.3C840,203,960,149,1080,138.7C1200,128,1320,160,1380,176L1440,192L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path></svg>');
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: 1;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: var(--text);
+            position: relative;
+            z-index: 2;
+        }
+
+        .simulation-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 0 5%;
+            margin-bottom: 80px;
+            max-width: 1400px;
+            margin: 0 auto 80px;
+        }
+
+        .simulation-links button {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--surface);
+            border: none;
+            padding: 25px 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            text-align: center;
+        }
+
+        .simulation-links button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(30deg);
+            transition: var(--transition);
+        }
+
+        .simulation-links button:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .simulation-links button:hover::before {
+            transform: rotate(30deg) translate(20px, 20px);
+        }
+
+        .simulation-links button i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+
+        .simulation-links button:hover i {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--surface);
+            padding: 30px 5%;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 20px;
+                height: 70px;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .simulation-links {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .simulation-links button {
+                height: 150px;
+                padding: 20px;
+            }
+        }
+
+        /* Animation */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive dropdown */
+        @media (max-width: 1024px) {
+            .dropdown-content {
+                left: auto;
+                right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a class="logo" href="../index.html"><i class="fas fa-laptop-code"></i>OS VISUALIZER</a>
+        <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">Algorithms <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="../Cpu_Scheduling/home.html"><i class="fas fa-chart-line"></i> Process Scheduling</a>
+                    <a href="../hashingAlgos/security.html"><i class="fas fa-lock"></i> Security Algorithms</a>
+                    <a href="../Bankers/banker.html"><i class="fas fa-money-bill-wave"></i> Bankers Algorithm</a>
+                    <a href="../Memory_Management/Fit.html"><i class="fas fa-memory"></i> Fit Algorithms</a>
+                    <a href="../Page_Replacement/page_replacement_home.html"><i class="fas fa-file-alt"></i> Page Replacement</a>
+                    <a href="../Disk/disk.html"><i class="fas fa-hdd"></i> Disk Scheduling</a>
+                    <a href="../file_allocation/index.html"><i class="fas fa-folder"></i> File Allocation</a>
+                    <a href="../Memory_Management/MVFT.html"><i class="fas fa-memory"></i> MFT and MVT</a>
+                    <a href="../Paging_Segmentation_and_AdvanceAlgorithms/index.html"><i class="fas fa-file-alt"></i> Paging Simulator</a>
+                    <a href="../IPC/home.html"><i class="fas fa-exchange-alt"></i> IPC</a>
+                    <a href="../Process_Synchronisation/index.html"><i class="fas fa-sync-alt"></i> Process Synchronisation</a>
+                    <a href="../File_Organisation/File_organization.html"><i class="fas fa-folder-open"></i> File Organization</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Process Synchronization Simulations</h1>
+        <p>The problem of Synchronization is a major task handled by the OS. Each problem below demonstrates unique challenges in managing access to shared resources in concurrent programming environments. Click on any of the problems below to learn more!</p>
+    </header>
+
+    <section class="simulation-links">
+        <button class="reader-writer" onclick="window.location.href='rw_wiki.html';">
+            <i class="fas fa-book-reader"></i>
+            Reader-Writer Problem
+        </button>
+        <button class="producer-consumer" onclick="window.location.href='pc_wiki.html';">
+            <i class="fas fa-industry"></i>
+            Producer-Consumer Problem
+        </button>
+        <button class="dining-philosophers" onclick="window.location.href='dining_wiki.html';">
+            <i class="fas fa-utensils"></i>
+            Dining Philosophers Problem
+        </button>
+        <button class="smoking-problem" onclick="window.location.href='cigrate_smoke_wiki.html';">
+            <i class="fas fa-smoking"></i>
+            Smoking Problem
+        </button>
+    </section>
+
+    <footer>
+        <p>© 2025 OS Visualizer</p>
+        <p>Operating System Concepts Visualized</p>
+    </footer>
+
+    <script>
+        // Add floating animation to buttons
+        document.querySelectorAll('.simulation-links button').forEach((button, index) => {
+            button.style.animationDelay = `${index * 0.5}s`;
+            button.classList.add('floating');
+        });
+
+        document.querySelectorAll('nav a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if(targetId === '#') {
+                e.preventDefault();
+                return;
+            }
+            
+            // Only prevent default if it's an on-page anchor
+            if(targetId.startsWith('#')) {
+                e.preventDefault();
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+        // Highlight current page in navigation
+        const currentPage = window.location.pathname.split('/').pop();
+        document.querySelectorAll('nav a').forEach(link => {
+            if(link.getAttribute('href').includes(currentPage)) {
+                link.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                link.style.borderRadius = '5px';
+            }
+        });
+    </script>
+</body>
+</html>

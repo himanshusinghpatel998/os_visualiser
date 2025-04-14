@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cigarette Smokers Problem</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="./css/cigarette_smokers.css">
+    </head>
+
+    <body>
+        <nav>
+            <a class="logo" href="../index.html"><i class="fas fa-laptop-code"></i> OS VISUALIZER</a>
+            <ul>
+                <li><a href="../index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+            </ul>
+        </nav>
+        <div class="container">
+            <header>
+                <h1 class="display-3"><i class="fas fa-smoking"></i> Cigarette Smokers Problem</h1>
+                <hr class="my-4">
+                <p>
+                    <i class="fas fa-info-circle" style="color: var(--primary);"></i> Assume a cigarette requires three ingredients to make and smoke: tobacco, paper, and matches. There are three smokers around a table, each of whom has an infinite supply of one of the three ingredients — one smoker has an infinite supply of tobacco, another has paper, and the third has matches.
+                </p>
+                <p>
+                    <i class="fas fa-info-circle" style="color: var(--primary);"></i> There is also a non-smoking agent who enables the smokers to make their cigarettes by arbitrarily (non-deterministically) selecting two of the supplies to place on the table. The smoker who has the third supply should remove the two items from the table, using them (along with their own supply) to make a cigarette, which they smoke for a while. Once the smoker has finished his cigarette, the agent places two new random items on the table. This process continues forever.
+                </p>
+                <hr class="my-4">
+                <p>
+                    <i class="fas fa-info-circle" style="color: var(--primary);"></i> Consider a system with three smoker processes and one agent process. One of the smoker processes has paper, another has tobacco, and the third has matches. The agent places two of the ingredients on the table. The smoker who has the remaining ingredient then makes and smoke a cigarette, signaling the agent on completion. The agent then puts out another two of the three ingredients, and the cycle repeats.
+                </p>
+                <hr class="my-4">
+            </header>
+
+            <div class="smoke-effect">
+                <img src="includes/DIAGRAM-smoker.jpg" alt="Cigarette Smokers Problem Illustration" class="floating">
+            </div>
+
+            <div class="content-links">
+                <a href="./index.html"><i class="fas fa-arrow-left"></i> Back to Sync Problems</a>
+                <a href="./cigarette_smokers.html"><i class="fas fa-play"></i> Run Simulation</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>OS Visualizer &copy; 2025 | Computer Science Education Tool</p>
+            <p>Created with <i class="fas fa-heart" style="color: #e91e63;"></i> for Operating System Concepts</p>
+        </footer>
+
+        <script>
+            // Improved navigation handling
+                document.addEventListener('DOMContentLoaded', function() {
+                // Floating animation
+                document.querySelectorAll('.floating').forEach((element, index) => {
+                    element.style.animationDelay = `${index * 0.5}s`;
+                });
+
+                // Navigation handling
+                const navLinks = document.querySelectorAll('nav a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        console.log('Navigation attempt to:', this.href);
+                        // Allow normal navigation
+                        return true;
+                    });
+                });
+
+                        // Remove the smooth scroll prevention as it was blocking navigation
+                        const smoothScrollElements = document.querySelectorAll('a[href^="#"]');
+                smoothScrollElements.forEach(anchor => {
+                    anchor.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

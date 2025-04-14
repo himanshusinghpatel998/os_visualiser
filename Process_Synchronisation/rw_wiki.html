@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Reader-Writer Problem</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            :root {
+                --primary: #4a55af;
+                --primary-dark: #4500a8;
+                --primary-light: #9e47ff;
+                --secondary: #03DAC6;
+                --light: #f8f9fa;
+                --dark: #212529;
+                --gray: #6c757d;
+                --light-gray: #e9ecef;
+                --white: #ffffff;
+                --reader-blue: #42A5F5;
+                --writer-orange: #FF7043;
+            }
+
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.7;
+                color: var(--dark);
+                background-color: #f5f5f7;
+                margin: 0;
+                padding: 0;
+                background: linear-gradient(135deg, #f5f5f7 0%, #e8eaf6 100%);
+            }
+
+            nav {
+                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                height: 80px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 2rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: var(--white);
+                text-decoration: none;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .logo i {
+                font-size: 1.5rem;
+            }
+
+            .logo:hover {
+                color: var(--light-gray);
+                transform: translateY(-2px);
+            }
+
+            nav ul {
+                display: flex;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            nav ul li {
+                margin-left: 1.5rem;
+            }
+
+            .nav-link {
+                color: rgba(255, 255, 255, 0.9);
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 1.1rem;
+                transition: all 0.3s ease;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .nav-link:hover {
+                color: var(--white);
+                background-color: var(--primary-light);
+                transform: translateY(-2px);
+            }
+
+
+            .a {
+                color: rgba(255, 255, 255, 0.9);
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 1.1rem;
+                transition: all 0.3s ease;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .a:hover {
+                color: var(--white);
+                background-color: var(--primary-light);
+                transform: translateY(-2px);
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 2rem auto;
+                padding: 0 2rem;
+            }
+
+            header {
+                background-color: var(--white);
+                padding: 3rem 2rem;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                margin-bottom: 2rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            header::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 5px;
+                background: linear-gradient(90deg, var(--reader-blue), var(--writer-orange));
+            }
+
+            h1.display-3 {
+                color: var(--primary);
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 1.5rem;
+                text-align: center;
+                position: relative;
+            }
+
+            h1.display-3::after {
+                content: "";
+                display: block;
+                width: 100px;
+                height: 4px;
+                background: linear-gradient(90deg, var(--reader-blue), var(--writer-orange));
+                margin: 1rem auto;
+                border-radius: 2px;
+            }
+
+            hr.my-4 {
+                border: 0;
+                height: 1px;
+                background-image: linear-gradient(to right, rgba(98, 0, 234, 0.1), rgba(98, 0, 234, 0.5), rgba(98, 0, 234, 0.1));
+                margin: 2rem auto;
+                max-width: 800px;
+            }
+
+            header p {
+                font-size: 1.1rem;
+                color: var(--dark);
+                margin-bottom: 1.5rem;
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+                line-height: 1.8;
+            }
+
+            img {
+                display: block;
+                max-width: 100%;
+                height: auto;
+                margin: 0 auto;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
+
+            img:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            }
+
+            .content-links {
+                display: flex;
+                justify-content: center;
+                gap: 2rem;
+                margin: 3rem 0;
+                flex-wrap: wrap;
+            }
+
+            .content-links a {
+                background-color: var(--primary);
+                color: var(--white);
+                padding: 1rem 2rem;
+                border-radius: 50px;
+                text-decoration: none;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .content-links a:hover {
+                background-color: var(--primary-dark);
+                transform: translateY(-3px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            footer {
+                text-align: center;
+                padding: 2rem;
+                color: var(--gray);
+                font-size: 0.9rem;
+                margin-top: 3rem;
+                background-color: var(--white);
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            }
+
+            /* Animation */
+            @keyframes float {
+                0%, 100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-10px);
+                }
+            }
+
+            .floating {
+                animation: float 6s ease-in-out infinite;
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                nav {
+                    padding: 0 1rem;
+                    height: 70px;
+                }
+                
+                .logo {
+                    font-size: 1.5rem;
+                }
+                
+                h1.display-3 {
+                    font-size: 2rem;
+                }
+                
+                header {
+                    padding: 2rem 1rem;
+                }
+                
+                .content-links {
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1rem;
+                }
+                
+                .content-links a {
+                    width: 80%;
+                    justify-content: center;
+                }
+            }
+
+            /* Custom book effect */
+            .book-effect {
+                position: relative;
+            }
+
+            .book-effect::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .book-effect:hover::after {
+                opacity: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <a class="logo" href="../index.html"><i class="fas fa-laptop-code"></i> OS VISUALIZER</a>
+            <ul>
+                <li><a href="../index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+            </ul>
+        </nav>
+        <div class="container">
+            <header>
+                <h1 class="display-3"><i class="fas fa-book-reader"></i> Reader-Writer Problem</h1>
+                <hr class="my-4">
+                <p>
+                    <i class="fas fa-info-circle" style="color: var(--primary);"></i> The readers-writers problem relates to an object such as a file that is shared between multiple processes. Some of these processes are readers i.e. they only want to read the data from the object and some of the processes are writers i.e. they want to write into the object.
+                </p>
+                <p>
+                    <i class="fas fa-info-circle" style="color: var(--primary);"></i> The readers-writers problem is used to manage synchronization so that there are no problems with the object data. For example - If two readers access the object at the same time there is no problem. However if two writers or a reader and writer access the object at the same time, there may be problems.
+                </p>
+                <hr class="my-4">
+            </header>
+
+            <div class="book-effect">
+                <img src="includes/reader_writer_items/rw_algo.png" alt="Reader-Writer Algorithm" class="floating">
+            </div>
+
+            <div class="content-links">
+                <a href="./index.html"><i class="fas fa-arrow-left"></i> Back to Sync Problems</a>
+                <a href="./reader_writer.html"><i class="fas fa-play"></i> Run Simulation</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>OS Visualizer &copy; 2025 | Computer Science Education Tool</p>
+            <p>Created with <i class="fas fa-heart" style="color: #e91e63;"></i> for Operating System Concepts</p>
+        </footer>
+
+        <script>
+            // Add floating animation to elements
+            document.querySelectorAll('.floating').forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.5}s`;
+            });
+
+            // Smooth scrolling for navigation
+            document.querySelectorAll('nav a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if(targetId === '#') return;
+                    
+                    document.querySelector(targetId).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Highlight current page in navigation
+            const currentPage = window.location.pathname.split('/').pop();
+            document.querySelectorAll('nav a').forEach(link => {
+                if(link.getAttribute('href').includes(currentPage)) {
+                    link.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                    link.style.borderRadius = '5px';
+                }
+            });
+            
+            document.querySelector('.nav-link').addEventListener('click', function(e) {
+                console.log('Navigating to:', this.href);
+            });
+            
+            document.querySelector('.logo').addEventListener('click', function(e) {
+                console.log('Navigating to:', this.href);
+            });
+        
+        </script>
+    </body>
+</html>
