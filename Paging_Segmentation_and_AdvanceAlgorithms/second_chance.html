@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Second Chance Page Replacement Simulator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #009688, #9c27b0);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 50px auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    h1{
+      text-align: center;
+      color: #7b1fa2;
+    }
+    h2,h3{
+      text-align: center;
+      color: #555;
+    }
+
+    p.description {
+      font-size: 16px;
+      color: #555;
+      background: #f0f0f0;
+      padding: 15px;
+      border-left: 6px solid #1abc9c;
+      border-radius: 8px;
+    }
+
+    input, button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #009688;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #00796b;
+    }
+
+    .frame-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .frame-table th, .frame-table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .frame-table th {
+      background-color: #b2dfdb;
+      color: #004d40;
+    }
+
+    .frame-table td {
+      background-color: #e0f2f1;
+    }
+
+    .output {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      display: none;
+    }
+
+    .success {
+      background-color: #dcedc8;
+      color: #33691e;
+      border-left: 6px solid #8bc34a;
+    }
+
+    .error {
+      background-color: #ffcdd2;
+      color: #c62828;
+      border-left: 6px solid #e53935;
+    }
+
+    .step-box {
+      background: #fce4ec;
+      padding: 15px;
+      border-left: 5px solid #ec407a;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Second Chance Page Replacement</h1>
+    <h3>Simulation of the Second Chance Algorithm</h3>
+    <p class="description">
+      <strong>🔁 What is the Second Chance Algorithm?</strong><br><br>
+      The Second Chance (or Clock) algorithm is an enhanced version of FIFO (First-In-First-Out). It gives each page a "second chance" before replacing it by checking its reference bit.<br><br>
+
+      💡 **How It Works:** When a page is about to be replaced, if its reference bit is 1, it's not removed immediately. Instead, the bit is cleared (set to 0) and the algorithm gives it another round in memory. Only pages with reference bit 0 are replaced.<br><br>
+
+      🧠 This way, frequently used pages stay in memory longer, improving efficiency and reducing page faults.<br><br>
+      This simulator visually walks you through each step of the algorithm!
+    </p>
+
+    <h2>Step 1: Enter Simulation Data</h2>
+    <label>Number of Frames:</label>
+    <input type="number" id="numFrames" min="1" max="10">
+
+    <label>Page Reference String (space-separated):</label>
+    <input type="text" id="referenceString" placeholder="e.g. 7 0 1 2 0 3 0 4">
+
+    <button onclick="simulate()">Run Simulation</button>
+
+    <div id="output" class="output"></div>
+
+    <h2>Step-by-Step Visualization</h2>
+    <div id="steps"></div>
+
+    <h2>Frame Table</h2>
+    <table class="frame-table" id="frameTable"></table>
+  </div>
+
+  <script>
+    function simulate() {
+      const framesCount = parseInt(document.getElementById("numFrames").value);
+      const refStr = document.getElementById("referenceString").value.trim().split(/\s+/).map(Number);
+      const output = document.getElementById("output");
+      const steps = document.getElementById("steps");
+      const frameTable = document.getElementById("frameTable");
+
+      if (isNaN(framesCount) || framesCount <= 0 || refStr.some(isNaN)) {
+        output.className = "output error";
+        output.innerText = "❌ Please provide valid frame count and reference string.";
+        output.style.display = "block";
+        return;
+      }
+
+      let frames = Array(framesCount).fill(null);
+      let refBits = Array(framesCount).fill(0);
+      let pointer = 0;
+      let hits = 0;
+      let faults = 0;
+      steps.innerHTML = "";
+      let history = [];
+
+      for (let i = 0; i < refStr.length; i++) {
+        const page = refStr[i];
+        const step = document.createElement("div");
+        step.className = "step-box";
+
+        if (frames.includes(page)) {
+          hits++;
+          const idx = frames.indexOf(page);
+          refBits[idx] = 1;
+          step.innerHTML = `✅ Page <strong>${page}</strong> is already in memory → HIT! Reference bit set to 1.`;
+        } else {
+          faults++;
+          while (true) {
+            if (refBits[pointer] === 0) {
+              step.innerHTML += `🔄 Page <strong>${page}</strong> replaces frame ${pointer}.`;
+              frames[pointer] = page;
+              refBits[pointer] = 1;
+              pointer = (pointer + 1) % framesCount;
+              break;
+            } else {
+              step.innerHTML += `↪️ Frame ${pointer} has reference bit 1 → Giving second chance (set to 0).<br>`;
+              refBits[pointer] = 0;
+              pointer = (pointer + 1) % framesCount;
+            }
+          }
+        }
+
+        steps.appendChild(step);
+        history.push([...frames]);
+      }
+
+      output.className = "output success";
+      output.style.display = "block";
+      output.innerText = `✅ Simulation Complete: Total Hits = ${hits}, Page Faults = ${faults}`;
+
+      let table = "<tr>";
+      for (let i = 0; i < refStr.length; i++) {
+        table += `<th>${refStr[i]}</th>`;
+      }
+      table += "</tr>";
+
+      for (let f = 0; f < framesCount; f++) {
+        table += "<tr>";
+        for (let t = 0; t < history.length; t++) {
+          table += `<td>${history[t][f] !== null ? history[t][f] : "-"}</td>`;
+        }
+        table += "</tr>";
+      }
+
+      frameTable.innerHTML = table;
+    }
+  </script>
+</body>
+</html>
+

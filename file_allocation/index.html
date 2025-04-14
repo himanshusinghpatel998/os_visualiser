@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>File Allocation Strategies</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>📁 File Allocation Strategies – Learn & Simulate</h1>
+
+    <!-- Homepage Section -->
+    <div class="section" id="home">
+      <h2>💾 Welcome to File Allocation Strategies Simulator</h2>
+
+      <div class="intro">
+        <p>
+          In any operating system, when a file is saved to the disk, it needs to be placed in memory blocks.
+          The way these blocks are assigned is called a <strong>File Allocation Strategy</strong>.
+          Efficient file allocation is critical for:
+        </p>
+        <ul>
+          <li>📂 Fast and direct file access</li>
+          <li>💾 Optimal disk space usage</li>
+          <li>🧠 Minimizing fragmentation</li>
+        </ul>
+        <p>This simulator will help you <strong>learn and visualize</strong> how different allocation techniques work.</p>
+      </div>
+
+      <div class="allocation-types">
+        <div class="alloc-card">
+          <h3>📏 Contiguous Allocation</h3>
+          <p>Files are stored in a single, continuous block of memory. It allows fast access but causes fragmentation and resizing issues.</p>
+          <a href="contiguous.html">
+            <button class="sim-btn">Go to Simulation ➜</button>
+          </a>
+        </div>
+
+        <div class="alloc-card">
+          <h3>🔗 Linked Allocation</h3>
+          <p>Each file block points to the next. It solves fragmentation but has slower access and overhead of pointers.</p>
+          <a href="linked.html">
+            <button class="sim-btn">Go to Simulation ➜</button>
+          </a>
+        </div>
+
+        <div class="alloc-card">
+          <h3>🧾 Indexed Allocation</h3>
+          <p>Each file has an index block that lists all its block addresses. Fast access and flexible, but uses extra space.</p>
+          <a href="indexed.html">
+            <button class="sim-btn">Go to Simulation ➜</button>
+          </a>
+        </div>
+
+        <div class="alloc-card">
+          <h3>📂 Inode Allocation</h3>
+          <p>Uses inodes containing pointers to data blocks. Supports direct and indirect access, commonly used in Unix/Linux.</p>
+          <a href="inode.html">
+            <button class="sim-btn">Go to Simulation ➜</button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

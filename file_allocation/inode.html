@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inode Allocation Simulation</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Inode Allocation Simulation</h1>
+    <a href="index.html"><button class="back-button">← Back to Home</button></a>
+    
+    <!-- Theory Section -->
+    <div class="section theory">
+      <h2>Theory</h2>
+      <p>
+        In inode-based file allocation, each file is represented by an inode—a data structure that stores both file metadata and pointers to the data blocks.
+        Typically, an inode contains a number of direct pointers and one or more indirect pointers (single, double, triple) to support larger files.
+      </p>
+      <h3>How It Works</h3>
+      <p>
+        For our simulation, we reserve block 0 as the inode block for a file. In our simplified model, the inode contains:
+      </p>
+      <ul>
+        <li><strong>4 direct pointers:</strong> These point directly to 4 data blocks.</li>
+        <li><strong>1 single indirect pointer:</strong> If the file needs more than 4 blocks, one block is allocated as an "indirect" block. This block then stores pointers to additional data blocks.</li>
+      </ul>
+      <p>
+        When a file is allocated, the inode (block 0) is assigned with the file name and the simulation allocates data blocks for the direct pointers first. If the file requires more than 4 blocks, one additional block is reserved for the indirect pointer, and then the remaining blocks are allocated.
+      </p>
+      <h3>Advantages</h3>
+      <ul>
+        <li>Efficient random access via direct pointers.</li>
+        <li>Scalability for larger files using indirect pointers.</li>
+      </ul>
+      <h3>Disadvantages</h3>
+      <ul>
+        <li>Extra overhead for storing the inode and indirect block.</li>
+        <li>Complexity increases with multi-level indexing.</li>
+      </ul>
+    </div>
+    
+    <!-- Pre-filled Blocks Input -->
+    <div class="section input-section">
+      <h3>Enter Pre-filled Blocks</h3>
+      <input type="text" id="preFilledBlocks" placeholder="Enter pre-filled blocks (e.g., 2, 4, 6)" />
+      <button onclick="updatePreFilledInput()">Update Pre-filled Blocks</button>
+    </div>
+    
+    <!-- Simulator Section -->
+    <div class="section simulator">
+      <h3>Simulator</h3>
+      <form id="fileForm">
+        <input type="text" id="filename" placeholder="File Name" required />
+        <!-- File Size means number of data blocks (not counting inode and indirect block) -->
+        <input type="number" id="filesize" placeholder="File Size (data blocks)" required />
+        <button type="submit">Allocate File</button>
+      </form>
+      <!-- Blocks will be drawn here -->
+      <div id="blockContainer" class="block-container"></div>
+    </div>
+  </div>
+
+  <script>
+    const totalBlocks = 30; 
+    /* Our simulation reserves block 0 for the inode. 
+       The inode will store file metadata and pointers.
+       Blocks 1 to totalBlocks-1 are available for data. */
+    let disk = Array(totalBlocks).fill(null);
+    const container = document.getElementById("blockContainer");
+
+    // Function to update the pre-filled input with indices marked as "Filled"
+    function updatePreFilledInput() {
+      const preFilledInput = document.getElementById("preFilledBlocks");
+      const filledIndices = [];
+      for (let i = 0; i < totalBlocks; i++) {
+        if (disk[i] === "Filled") {
+          filledIndices.push(i);
+        }
+      }
+      preFilledInput.value = filledIndices.join(", ");
+    }
+
+    // Function to draw the blocks
+    function drawBlocks() {
+      container.innerHTML = "";
+      for (let i = 0; i < totalBlocks; i++) {
+        const block = document.createElement("div");
+        block.classList.add("block");
+        // If block 0 is the inode, display its content specially; otherwise, number blocks 1...n
+        if (i === 0) {
+          block.textContent = disk[i] ? disk[i] : "Inode";
+        } else {
+          block.textContent = disk[i] ? disk[i] : i;
+        }
+        if (disk[i] === "Filled") {
+          block.classList.add("filled");
+        }
+        // Add click listener to toggle the "Filled" status on click (only for non-allocated blocks)
+        block.addEventListener("click", () => {
+          // Allow toggling only if block is not allocated by a file (i.e. doesn't contain a filename or metadata)
+          if (disk[i] === null) {
+            disk[i] = "Filled";
+          } else if (disk[i] === "Filled") {
+            disk[i] = null;
+          }
+          drawBlocks();
+          updatePreFilledInput();
+        });
+        container.appendChild(block);
+      }
+    }
+
+    // Inode simulation: Reserve block 0 for inode.
+    // For simplicity, we do not allow pre-filling block 0.
+    // When allocating a file, we first use block 0 as the inode, then:
+    // - Allocate up to 4 free blocks for direct pointers.
+    // - If file requires more than 4 data blocks, reserve one block as the indirect pointer.
+    // - Then allocate remaining blocks using the indirect pointer.
+    document.getElementById("fileForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const filename = document.getElementById("filename").value;
+      const filesize = parseInt(document.getElementById("filesize").value); // number of data blocks requested
+
+      // Check if inode block (block 0) is free
+      if (disk[0] !== null) {
+        alert("Inode block is already allocated or pre-filled. Cannot allocate file.");
+        return;
+      }
+
+      // Reserve block 0 for inode and store the file name there
+      disk[0] = filename + " (Inode)";
+      
+      let allocatedDirect = [];
+      let allocatedIndirect = [];
+      // For direct pointers, try to allocate 4 free blocks (skip block 0)
+      for (let i = 1; i < totalBlocks && allocatedDirect.length < 4; i++) {
+        if (disk[i] === null) {
+          allocatedDirect.push(i);
+        }
+      }
+      
+      // Calculate remaining data blocks needed
+      let remaining = filesize - allocatedDirect.length;
+      // If remaining > 0, then we need an indirect block.
+      let indirectBlock = -1;
+      if (remaining > 0) {
+        // Allocate one free block for the indirect pointer table (skip block 0 and those already allocated as direct)
+        for (let i = 1; i < totalBlocks; i++) {
+          if (disk[i] === null && !allocatedDirect.includes(i)) {
+            indirectBlock = i;
+            break;
+          }
+        }
+        if (indirectBlock === -1) {
+          alert("Not enough space for the indirect pointer block.");
+          // Free inode block
+          disk[0] = null;
+          return;
+        }
+        // Mark the indirect block specially
+        disk[indirectBlock] = filename + " (Indirect)";
+        
+        // Allocate remaining data blocks for indirect pointers (skip block 0, direct blocks, and indirect block)
+        for (let i = 1; i < totalBlocks && allocatedIndirect.length < remaining; i++) {
+          if (disk[i] === null && i !== indirectBlock && !allocatedDirect.includes(i)) {
+            allocatedIndirect.push(i);
+          }
+        }
+        if (allocatedIndirect.length < remaining) {
+          alert("Not enough space to allocate the requested data blocks via inode allocation.");
+          // Free allocated inode, direct and indirect blocks
+          disk[0] = null;
+          allocatedDirect.forEach(idx => disk[idx] = null);
+          if (indirectBlock !== -1) disk[indirectBlock] = null;
+          return;
+        }
+      }
+      
+      // Mark direct data blocks with filename
+      allocatedDirect.forEach(idx => disk[idx] = filename);
+      // Mark indirect allocated blocks with filename
+      allocatedIndirect.forEach(idx => disk[idx] = filename);
+      
+      // Optionally, show an alert with details
+      let alertMsg = "File '" + filename + "' allocated as follows:\n";
+      alertMsg += "Inode (Block 0): " + disk[0] + "\n";
+      alertMsg += "Direct Blocks: " + allocatedDirect.join(", ") + "\n";
+      if (remaining > 0) {
+        alertMsg += "Indirect Block: " + indirectBlock + "\n";
+        alertMsg += "Indirect Data Blocks: " + allocatedIndirect.join(", ") + "\n";
+      }
+      alert(alertMsg);
+      
+      drawBlocks();
+    });
+
+    drawBlocks();
+  </script>
+</body>
+</html>

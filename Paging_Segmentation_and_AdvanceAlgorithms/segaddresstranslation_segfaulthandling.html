@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Segmentation Address Translation Simulator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1abc9c, #9b59b6);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #6a1b9a;
+    }
+    h3{
+      text-align: center;
+      color: #555;
+    }
+
+    p.description {
+      font-size: 16px;
+      color: #555;
+      background: #f0f0f0;
+      padding: 15px;
+      border-left: 6px solid #1abc9c;
+      border-radius: 8px;
+    }
+
+    input, button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #1abc9c;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #16a085;
+    }
+
+    .segment-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .segment-table th, .segment-table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .segment-table th {
+      background-color: #e1bee7;
+      color: #4a148c;
+    }
+
+    .segment-table td {
+      background-color: #fdfdfd;
+    }
+
+    .output {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      display: none;
+    }
+
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+      border-left: 6px solid #28a745;
+    }
+
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border-left: 6px solid #dc3545;
+    }
+
+    hr {
+      margin: 30px 0;
+      border: none;
+      height: 2px;
+      background-color: #ddd;
+    }
+
+    .section-title {
+      margin-top: 30px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Segmentation Address Translation and Fault Handling</h1>
+    <h3>Simulation of the Segmentation Address Translation Algorithm</h3>
+    <p class="description">
+        <strong>What is Segmentation?</strong><br><br>
+        Segmentation is a memory management technique used in operating systems where a program is divided into different parts (called segments) such as code, data, stack, etc. Each segment is stored in a different part of memory and has its own base (starting address) and limit (maximum size). This helps in isolating different parts of a program and protects memory from being accessed incorrectly.<br><br>
+      
+        <strong>Real-world Analogy:</strong><br>
+        Imagine a building with different floors. Each floor represents a segment (code, data, etc.). You’re only allowed to walk a certain distance (offset) from the start of a floor (base). If you try to walk too far and go beyond that floor’s boundary (limit), the system throws a “Segmentation Fault”.<br><br>
+      
+        <strong>How Address Translation Works:</strong><br>
+        1️⃣ A program gives a <strong>logical address</strong> in the form of (Segment Number, Offset).<br>
+        2️⃣ The system looks up the <strong>base address</strong> and <strong>limit</strong> for the given segment.<br>
+        3️⃣ If the offset is within the limit, the <strong>physical address</strong> is calculated as:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<strong>Physical Address = Base + Offset</strong><br>
+        4️⃣ If the offset is beyond the limit, it raises a <strong>Segmentation Fault</strong> to prevent accessing memory outside the segment.<br><br>
+      
+        This mechanism adds safety and structure to memory access, ensuring that a process cannot accidentally or intentionally access another process’s memory.
+      </p>
+      
+
+    <h2 class="section-title">Step 1: Create Segment Table</h2>
+    <label>Enter number of segments:</label>
+    <input type="number" id="numSegments" min="1" max="10">
+    <button onclick="createSegmentFields()">Create Segment Table</button>
+    <div id="segmentFields"></div>
+    <div id="segmentList"></div>
+
+    <hr>
+
+    <h2 class="section-title">Step 2: Translate Logical Address</h2>
+    <label>Segment Number:</label>
+    <input type="number" id="segmentNumber">
+    <label>Offset:</label>
+    <input type="number" id="offset">
+    <button onclick="translateAddress()">Translate</button>
+    <div id="output" class="output"></div>
+
+    <h2 class="section-title">Step-by-Step Visualization</h2>
+<div id="visualization" style="margin-top: 20px; display: none;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+    <div style="flex: 1; background: #f9f9f9; padding: 15px; border-left: 5px solid #6a1b9a; border-radius: 8px;">
+      <strong>Step 1:</strong> Select Segment from Segment Table using Segment Number.
+    </div>
+    <div style="flex: 1; background: #f9f9f9; padding: 15px; border-left: 5px solid #1abc9c; border-radius: 8px;">
+      <strong>Step 2:</strong> Check if Offset is within the segment's Limit.
+    </div>
+    <div style="flex: 1; background: #f9f9f9; padding: 15px; border-left: 5px solid #2980b9; border-radius: 8px;">
+      <strong>Step 3:</strong> If valid, Physical Address = Base + Offset. Else, Segmentation Fault occurs.
+    </div>
+  </div>
+
+  <div id="memoryBlocks" style="margin-top: 30px; text-align: center;">
+    <div style="display: inline-block; margin: 10px;">
+      <div id="block-segment" style="width: 100px; height: 100px; background-color: #9b59b6; color: white; line-height: 100px; border-radius: 10px;">Segment</div>
+      <p>Segment Base</p>
+    </div>
+    <div style="display: inline-block; margin: 10px;">
+      <div id="block-offset" style="width: 100px; height: 100px; background-color: #1abc9c; color: white; line-height: 100px; border-radius: 10px;">Offset</div>
+      <p>Offset</p>
+    </div>
+    <div style="display: inline-block; margin: 10px;">
+      <div id="block-result" style="width: 100px; height: 100px; background-color: #34495e; color: white; line-height: 100px; border-radius: 10px;">?</div>
+      <p>Physical Address</p>
+    </div>
+  </div>
+</div>
+
+  </div>
+
+  <script>
+    let segmentTable = [];
+
+    function createSegmentFields() {
+      const num = parseInt(document.getElementById("numSegments").value);
+      const container = document.getElementById("segmentFields");
+      container.innerHTML = '';
+      segmentTable = [];
+
+      for (let i = 0; i < num; i++) {
+        container.innerHTML += `
+          <div style="margin-top:10px;">
+            <strong>Segment ${i}</strong><br>
+            Base: <input type="number" id="base${i}" placeholder="Base address">
+            Limit: <input type="number" id="limit${i}" placeholder="Limit size">
+          </div>
+        `;
+      }
+
+      container.innerHTML += `<button style="margin-top:15px;" onclick="saveSegmentTable()">Save Segment Table</button>`;
+    }
+
+    function saveSegmentTable() {
+      segmentTable = [];
+      const num = parseInt(document.getElementById("numSegments").value);
+      for (let i = 0; i < num; i++) {
+        const base = parseInt(document.getElementById(`base${i}`).value);
+        const limit = parseInt(document.getElementById(`limit${i}`).value);
+        if (isNaN(base) || isNaN(limit)) {
+          alert(`Please fill both base and limit for Segment ${i}`);
+          return;
+        }
+        segmentTable.push({ base, limit });
+      }
+      showSegmentList();
+    }
+
+    function showSegmentList() {
+      let html = `<h3>Segment Table</h3>
+        <table class="segment-table">
+          <tr><th>Segment</th><th>Base</th><th>Limit</th></tr>`;
+
+      segmentTable.forEach((seg, idx) => {
+        html += `<tr><td>${idx}</td><td>${seg.base}</td><td>${seg.limit}</td></tr>`;
+      });
+
+      html += `</table>`;
+      document.getElementById("segmentList").innerHTML = html;
+    }
+    function translateAddress() {
+  const segNo = parseInt(document.getElementById("segmentNumber").value);
+  const offset = parseInt(document.getElementById("offset").value);
+  const output = document.getElementById("output");
+  const visualization = document.getElementById("visualization");
+  const blockSegment = document.getElementById("block-segment");
+  const blockOffset = document.getElementById("block-offset");
+  const blockResult = document.getElementById("block-result");
+
+  if (isNaN(segNo) || isNaN(offset)) {
+    output.className = "output error";
+    output.style.display = "block";
+    visualization.style.display = "none";
+    output.innerText = "❌ Please enter valid segment number and offset.";
+    return;
+  }
+
+  if (segNo < 0 || segNo >= segmentTable.length) {
+    output.className = "output error";
+    output.style.display = "block";
+    visualization.style.display = "none";
+    output.innerText = `❌ Segmentation Fault: Segment number ${segNo} is invalid.`;
+    return;
+  }
+
+  const segment = segmentTable[segNo];
+
+  blockSegment.innerText = `S${segNo}`;
+  blockOffset.innerText = `${offset}`;
+
+  if (offset < 0 || offset >= segment.limit) {
+    output.className = "output error";
+    output.style.display = "block";
+    output.innerText = `❌ Segmentation Fault: Offset ${offset} exceeds limit ${segment.limit} of segment ${segNo}.`;
+    visualization.style.display = "block";
+    blockResult.innerText = "Fault";
+    blockResult.style.backgroundColor = "#e74c3c";
+  } else {
+    const physicalAddress = segment.base + offset;
+    output.className = "output success";
+    output.style.display = "block";
+    output.innerText = `✅ Translation Success:\nSegment ${segNo} → Base(${segment.base}) + Offset(${offset}) = Physical Address: ${physicalAddress}`;
+    visualization.style.display = "block";
+    blockResult.innerText = physicalAddress;
+    blockResult.style.backgroundColor = "#27ae60";
+  }
+}
+
+  </script>
+</body>
+</html>

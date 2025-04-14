@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linked Allocation</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Linked Allocation</h1>
+    <a href="index.html"><button class="back-button">Back to Home</button></a>
+
+    <!-- Theory Section -->
+    <div class="section theory">
+      <h2>Theory</h2>
+      <p>
+        In Linked Allocation, each file is divided into blocks, and each block contains both data and a pointer to the next block.
+        The final block contains a pointer with a null value, indicating the end of the file.
+      </p>
+      <h3>How It Works</h3>
+      <p>
+        Files are stored as a linked list of blocks. When a file is read, the operating system follows the chain of pointers from block to block until the end-of-file marker is reached.
+      </p>
+      <h3>Additional Details</h3>
+      <p>
+        This method is particularly useful for files that grow dynamically since new blocks can be appended easily. However, random access is slower because every block must be traversed sequentially.
+      </p>
+      <h3>Advantages</h3>
+      <ul>
+        <li>No fragmentation: Files can be stored in any available free block.</li>
+        <li>Flexible file growth: Files can easily expand by linking additional blocks.</li>
+      </ul>
+      <h3>Disadvantages</h3>
+      <ul>
+        <li>Sequential access: Finding a specific block is slow due to pointer traversal.</li>
+        <li>Pointer overhead: Each block reserves space for its pointer.</li>
+      </ul>
+    </div>
+
+    <!-- Pre-filled Blocks Input Section -->
+    <div class="section input-section">
+      <h3>Enter Pre-filled Blocks</h3>
+      <input type="text" id="preFilledBlocks" placeholder="Enter pre-filled blocks (e.g., 2, 4, 6)" />
+      <button onclick="updatePreFilledInput()">Update Pre-filled Blocks</button>
+    </div>
+
+    <!-- Simulator Section -->
+    <div class="section simulator">
+      <h3>Simulator</h3>
+      <form id="fileForm">
+        <input type="text" id="filename" placeholder="File Name" required />
+        <input type="number" id="filesize" placeholder="File Size (in blocks)" required />
+        <button type="submit">Allocate File</button>
+      </form>
+      <div id="blockContainer" class="block-container"></div>
+    </div>
+  </div>
+
+  <script>
+    const totalBlocks = 30;
+    let disk = Array(totalBlocks).fill(null);
+    const container = document.getElementById("blockContainer");
+
+    function updatePreFilledInput() {
+      const preFilledInput = document.getElementById("preFilledBlocks");
+      const filledIndices = [];
+      for (let i = 0; i < totalBlocks; i++) {
+        if (disk[i] === "Filled") {
+          filledIndices.push(i);
+        }
+      }
+      preFilledInput.value = filledIndices.join(", ");
+    }
+
+    function drawBlocks() {
+      container.innerHTML = "";
+      for (let i = 0; i < totalBlocks; i++) {
+        const block = document.createElement("div");
+        block.classList.add("block");
+        block.textContent = disk[i] ? disk[i] : i + 1;
+        if (disk[i] === "Filled") {
+          block.classList.add("filled");
+        }
+        block.addEventListener("click", () => {
+          if (disk[i] === null) {
+            disk[i] = "Filled";
+          } else if (disk[i] === "Filled") {
+            disk[i] = null;
+          }
+          drawBlocks();
+          updatePreFilledInput();
+        });
+        container.appendChild(block);
+      }
+    }
+
+    document.getElementById("fileForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const filename = document.getElementById("filename").value;
+      const filesize = parseInt(document.getElementById("filesize").value);
+
+      let allocatedBlocks = [];
+      for (let i = 0; i < totalBlocks; i++) {
+        if (disk[i] === null) {
+          disk[i] = filename;
+          allocatedBlocks.push(i);
+          if (allocatedBlocks.length === filesize) break;
+        }
+      }
+
+      if (allocatedBlocks.length < filesize) {
+        alert("Not enough space to allocate the entire file.");
+      } else {
+        alert(`File '${filename}' allocated to blocks: ${allocatedBlocks.join(", ")}`);
+      }
+      drawBlocks();
+    });
+
+    drawBlocks();
+  </script>
+</body>
+</html>

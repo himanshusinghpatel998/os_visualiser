@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Page Table Lookup Simulator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1abc9c, #9b59b6);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #6a1b9a;
+    }
+
+    h3 {
+      text-align: center;
+      color: #555;
+    }
+
+    p.description {
+      font-size: 16px;
+      color: #555;
+      background: #f0f0f0;
+      padding: 15px;
+      border-left: 6px solid #1abc9c;
+      border-radius: 8px;
+    }
+
+    input, button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #1abc9c;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #16a085;
+    }
+
+    .page-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .page-table th, .page-table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .page-table th {
+      background-color: #e1bee7;
+      color: #4a148c;
+    }
+
+    .page-table td {
+      background-color: #fdfdfd;
+    }
+
+    .output {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      display: none;
+    }
+
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+      border-left: 6px solid #28a745;
+    }
+
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border-left: 6px solid #dc3545;
+    }
+
+    hr {
+      margin: 30px 0;
+      border: none;
+      height: 2px;
+      background-color: #ddd;
+    }
+
+    .section-title {
+      margin-top: 30px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Page Table Lookup and Fault Handling</h1>
+  <h3>Simulation of the Page Table Lookup Algorithm</h3>
+
+  <p class="description">
+    <strong> What is Paging?</strong><br><br>
+    Paging is a memory management scheme that eliminates the need for contiguous allocation of physical memory. The operating system divides both logical (virtual) memory and physical memory into fixed-size blocks called <strong>pages</strong> and <strong>frames</strong>, respectively.<br><br>
+  
+    Think of it like a **bookshelf**: virtual memory is a book broken into chapters (pages), and physical memory is a shelf with slots (frames). The <strong>Page Table</strong> is like an index telling you which chapter (page) is placed on which shelf slot (frame).<br><br>
+  
+    <strong>How Translation Works:</strong><br>
+    ➤ A logical address is split into two parts: the <strong>Page Number</strong> and the <strong>Offset</strong>.<br>
+    ➤ The Page Number is used to index into the Page Table to find the corresponding Frame Number.<br>
+    ➤ If the page is <strong>valid and present</strong>, the Physical Address is calculated as:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<code>Physical Address = Frame Number × Page Size + Offset</code><br>
+    ➤ If the page is <strong>not present</strong>, a <strong>Page Fault</strong> occurs.<br><br>
+  
+    Use this to understand how operating systems manage memory efficiently using Paging!
+  </p>
+  
+  <h2 class="section-title">Step 1: Define Page Table</h2>
+  <label>Number of Pages:</label>
+  <input type="number" id="numPages" min="1" max="10">
+  <button onclick="createPageTable()">Create Page Table</button>
+  <div id="pageTableFields"></div>
+  <div id="pageTableDisplay"></div>
+
+  <hr>
+
+  <h2 class="section-title">Step 2: Translate Logical Address</h2>
+  <label>Page Number:</label>
+  <input type="number" id="pageNumber">
+  <label>Offset:</label>
+  <input type="number" id="pageOffset">
+  <button onclick="translateLogicalAddress()">Translate</button>
+  <div id="output" class="output"></div>
+
+  <h2 class="section-title">Step-by-Step Visualization</h2>
+  <div id="visualization" style="margin-top: 20px; display: none;">
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;">
+      <div style="flex: 1; background: #f9f9f9; padding: 15px; border-left: 5px solid #6a1b9a; border-radius: 8px;">
+        <strong>Step 1:</strong> Extract Page Number from Logical Address.
+      </div>
+      <div style="flex: 1; background: #f9f9f9; padding: 15px; border-left: 5px solid #1abc9c; border-radius: 8px;">
+        <strong>Step 2:</strong> Check if Page Number is valid and present in Page Table.
+      </div>
+      <div style="flex: 1; background: #f9f9f9; padding: 15px; border-left: 5px solid #2980b9; border-radius: 8px;">
+        <strong>Step 3:</strong> If valid, Physical Address = Frame Number × Page Size + Offset.
+      </div>
+    </div>
+
+    <div id="memoryBlocks" style="margin-top: 30px; text-align: center;">
+      <div style="display: inline-block; margin: 10px;">
+        <div id="block-page" style="width: 100px; height: 100px; background-color: #9b59b6; color: white; line-height: 100px; border-radius: 10px;">Page</div>
+        <p>Page Number</p>
+      </div>
+      <div style="display: inline-block; margin: 10px;">
+        <div id="block-offset" style="width: 100px; height: 100px; background-color: #1abc9c; color: white; line-height: 100px; border-radius: 10px;">Offset</div>
+        <p>Offset</p>
+      </div>
+      <div style="display: inline-block; margin: 10px;">
+        <div id="block-frame" style="width: 100px; height: 100px; background-color: #34495e; color: white; line-height: 100px; border-radius: 10px;">?</div>
+        <p>Physical Address</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let pageTable = [];
+
+  function createPageTable() {
+    const num = parseInt(document.getElementById("numPages").value);
+    const container = document.getElementById("pageTableFields");
+    container.innerHTML = '';
+    pageTable = [];
+
+    for (let i = 0; i < num; i++) {
+      container.innerHTML += `
+        <div style="margin-top:10px;">
+          <strong>Page ${i}</strong><br>
+          Frame Number: <input type="number" id="frame${i}" placeholder="Frame number">
+          Present (1 or 0): <input type="number" id="present${i}" min="0" max="1" placeholder="1 = valid, 0 = fault">
+        </div>
+      `;
+    }
+
+    container.innerHTML += `<button style="margin-top:15px;" onclick="savePageTable()">Save Page Table</button>`;
+  }
+
+  function savePageTable() {
+    pageTable = [];
+    const num = parseInt(document.getElementById("numPages").value);
+    for (let i = 0; i < num; i++) {
+      const frame = parseInt(document.getElementById(`frame${i}`).value);
+      const present = parseInt(document.getElementById(`present${i}`).value);
+      if (isNaN(frame) || isNaN(present)) {
+        alert(`Fill both frame and present flag for Page ${i}`);
+        return;
+      }
+      pageTable.push({ frame, present });
+    }
+
+    let html = `<h3>Page Table</h3><table class="page-table"><tr><th>Page</th><th>Frame</th><th>Present</th></tr>`;
+    pageTable.forEach((p, i) => {
+      html += `<tr><td>${i}</td><td>${p.frame}</td><td>${p.present}</td></tr>`;
+    });
+    html += `</table>`;
+    document.getElementById("pageTableDisplay").innerHTML = html;
+  }
+
+  function translateLogicalAddress() {
+    const pageNo = parseInt(document.getElementById("pageNumber").value);
+    const offset = parseInt(document.getElementById("pageOffset").value);
+    const output = document.getElementById("output");
+    const viz = document.getElementById("visualization");
+    const blockPage = document.getElementById("block-page");
+    const blockOffset = document.getElementById("block-offset");
+    const blockFrame = document.getElementById("block-frame");
+
+    if (isNaN(pageNo) || isNaN(offset)) {
+      output.className = "output error";
+      output.style.display = "block";
+      output.innerText = "❌ Please enter valid page number and offset.";
+      viz.style.display = "none";
+      return;
+    }
+
+    if (pageNo < 0 || pageNo >= pageTable.length) {
+      output.className = "output error";
+      output.style.display = "block";
+      output.innerText = `❌ Page Fault: Invalid Page Number ${pageNo}`;
+      viz.style.display = "none";
+      return;
+    }
+
+    const entry = pageTable[pageNo];
+    blockPage.innerText = `P${pageNo}`;
+    blockOffset.innerText = `${offset}`;
+
+    if (entry.present === 0) {
+      output.className = "output error";
+      output.style.display = "block";
+      output.innerText = `❌ Page Fault: Page ${pageNo} not present in memory.`;
+      blockFrame.innerText = "Fault";
+      blockFrame.style.backgroundColor = "#e74c3c";
+      viz.style.display = "block";
+    } else {
+      const pageSize = 1000; // Simulated size
+      const physicalAddress = entry.frame * pageSize + offset;
+      output.className = "output success";
+      output.style.display = "block";
+      output.innerText = `✅ Translation Success: Frame ${entry.frame} * PageSize(${pageSize}) + Offset(${offset}) = Physical Address: ${physicalAddress}`;
+      blockFrame.innerText = physicalAddress;
+      blockFrame.style.backgroundColor = "#27ae60";
+      viz.style.display = "block";
+    }
+  }
+</script>
+</body>
+</html>
