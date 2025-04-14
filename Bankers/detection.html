@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deadlock Detection Algorithm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #4a55af;
+            border-bottom: 2px solid #4a55af;
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .advantages, .disadvantages {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .advantages {
+            border-left: 4px solid #2ecc71;
+        }
+        .disadvantages {
+            border-left: 4px solid #f72533;
+        }
+        
+        /* Simulation styles */
+        :root {
+            --primary-color: #4a55af;
+            --primary-light: #4895ef;
+            --secondary-color: #4a55af;
+            --success-color: #2ecc71;
+            --danger-color: #f72533;
+            --warning-color: #f8961e;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --border-color: #dee2e6;
+            --text-color: #495057;
+            --text-light: #6c757d;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+            flex: 1;
+        }
+
+        .input-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+            font-size: 0.9rem;
+        }
+
+        .input-group input, 
+        .input-group select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .input-group input:focus, 
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .matrix-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .matrix-panel {
+            flex: 1;
+            min-width: 300px;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Vertical available resources panel */
+        .available-panel {
+            flex: 0.5;
+            min-width: 150px;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .matrix-panel h3 {
+            margin-bottom: 1rem;
+            text-align: center;
+            color: var(--dark-color);
+        }
+
+        .matrix-panel.scrollable {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .matrix-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .matrix-table th, 
+        .matrix-table td {
+            border: 1px solid var(--border-color);
+            padding: 0.75rem;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .matrix-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        .matrix-table tr:nth-child(even) {
+            background-color: rgba(248, 249, 250, 0.5);
+        }
+
+        .matrix-table input {
+            width: 100%;
+            padding: 0.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+            background-color: transparent;
+        }
+
+        .vector-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .vector-item {
+            min-width: 60px;
+        }
+
+        .vector-item input {
+            width: 100%;
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+        }
+
+        .action-section {
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .result-container {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            background-color: white;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .success {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .danger {
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .matrix-section {
+                flex-direction: column;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn-group button {
+                width: 100%;
+            }
+            
+            .available-panel {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Deadlock Detection Algorithm</h1>
+        
+        <h2>Theory</h2>
+        <p>The Deadlock Detection Algorithm examines the system's current state to determine whether any deadlock exists. Unlike prevention or avoidance approaches, this algorithm detects deadlocks after they occur, allowing the system to take corrective action.</p>
+        <p>This approach is particularly useful in systems where deadlocks are rare or where the cost of prevention is too high. The algorithm periodically checks the system state for deadlock conditions.</p>
+        
+        <div class="advantages">
+            <h3>Advantages</h3>
+            <ul>
+                <li>Can detect all existing deadlocks in the system</li>
+                <li>Doesn't require advance knowledge of resource needs</li>
+                <li>More flexible than prevention/avoidance approaches</li>
+                <li>Lower runtime overhead compared to prevention methods</li>
+            </ul>
+        </div>
+        
+        <div class="disadvantages">
+            <h3>Disadvantages</h3>
+            <ul>
+                <li>Detection occurs after deadlock has already happened</li>
+                <li>Recovery methods can be costly (process termination/preemption)</li>
+                <li>Requires periodic checks which consume system resources</li>
+                <li>May lead to lost work when processes need to be terminated</li>
+            </ul>
+        </div>
+
+        <h2>Simulation</h2>
+        
+        <div class="control-panel">
+            <div class="input-group">
+                <label for="processes">Number of Processes:</label>
+                <input type="number" id="processes" min="1" value="5">
+            </div>
+            <div class="input-group">
+                <label for="resources">Number of Resource Types:</label>
+                <input type="number" id="resources" min="1" value="3">
+            </div>
+            <div class="btn-group">
+                <button onclick="initMatrices()">Initialize Matrices</button>
+                <button onclick="loadSampleData()">Load Sample Data</button>
+                <button onclick="clearData()">Clear Data</button>
+            </div>
+        </div>
+        
+        <div class="matrix-section">
+            <div class="available-panel">
+                <h3>Available Resources</h3>
+                <div id="available-container" class="vector-container"></div>
+            </div>
+            
+            <div class="matrix-panel scrollable">
+                <h3>Allocation Matrix</h3>
+                <table id="allocation-container" class="matrix-table">
+                    <thead id="allocation-header"></thead>
+                    <tbody id="allocation-body"></tbody>
+                </table>
+            </div>
+            
+            <div class="matrix-panel scrollable">
+                <h3>Request Matrix</h3>
+                <table id="request-container" class="matrix-table">
+                    <thead id="request-header"></thead>
+                    <tbody id="request-body"></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="action-section">
+            <button onclick="detectDeadlock()">Detect Deadlock</button>
+            <div id="result" class="result-container"></div>
+        </div>
+    </div>
+
+    <script>
+        let processes = 5;
+        let resources = 3;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initMatrices();
+        });
+
+        function initMatrices() {
+            processes = parseInt(document.getElementById('processes').value);
+            resources = parseInt(document.getElementById('resources').value);
+            
+            const availableContainer = document.getElementById('available-container');
+            availableContainer.innerHTML = '';
+            for (let i = 0; i < resources; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.min = '0';
+                input.value = '0';
+                input.id = `available-${i}`;
+                input.className = 'vector-item';
+                availableContainer.appendChild(input);
+            }
+            
+            const allocationHeader = document.getElementById('allocation-header');
+            const allocationBody = document.getElementById('allocation-body');
+            allocationHeader.innerHTML = '';
+            allocationBody.innerHTML = '';
+            
+            let headerRow = document.createElement('tr');
+            let emptyHeader = document.createElement('th');
+            headerRow.appendChild(emptyHeader);
+            
+            for (let j = 0; j < resources; j++) {
+                let th = document.createElement('th');
+                th.textContent = `R${j}`;
+                headerRow.appendChild(th);
+            }
+            allocationHeader.appendChild(headerRow);
+            
+            for (let i = 0; i < processes; i++) {
+                let row = document.createElement('tr');
+                let processHeader = document.createElement('th');
+                processHeader.textContent = `P${i}`;
+                row.appendChild(processHeader);
+                
+                for (let j = 0; j < resources; j++) {
+                    let cell = document.createElement('td');
+                    let input = document.createElement('input');
+                    input.type = 'number';
+                    input.min = '0';
+                    input.value = '0';
+                    input.id = `allocation-${i}-${j}`;
+                    cell.appendChild(input);
+                    row.appendChild(cell);
+                }
+                allocationBody.appendChild(row);
+            }
+            
+            const requestHeader = document.getElementById('request-header');
+            const requestBody = document.getElementById('request-body');
+            requestHeader.innerHTML = '';
+            requestBody.innerHTML = '';
+            
+            headerRow = document.createElement('tr');
+            emptyHeader = document.createElement('th');
+            headerRow.appendChild(emptyHeader);
+            
+            for (let j = 0; j < resources; j++) {
+                let th = document.createElement('th');
+                th.textContent = `R${j}`;
+                headerRow.appendChild(th);
+            }
+            requestHeader.appendChild(headerRow);
+            
+            for (let i = 0; i < processes; i++) {
+                let row = document.createElement('tr');
+                let processHeader = document.createElement('th');
+                processHeader.textContent = `P${i}`;
+                row.appendChild(processHeader);
+                
+                for (let j = 0; j < resources; j++) {
+                    let cell = document.createElement('td');
+                    let input = document.createElement('input');
+                    input.type = 'number';
+                    input.min = '0';
+                    input.value = '0';
+                    input.id = `request-${i}-${j}`;
+                    cell.appendChild(input);
+                    row.appendChild(cell);
+                }
+                requestBody.appendChild(row);
+            }
+            
+            document.getElementById('result').innerHTML = '';
+        }
+
+        function loadSampleData() {
+            processes = 5;
+            resources = 3;
+            
+            document.getElementById('processes').value = processes;
+            document.getElementById('resources').value = resources;
+            
+            initMatrices();
+            
+            document.getElementById('available-0').value = '0';
+            document.getElementById('available-1').value = '0';
+            document.getElementById('available-2').value = '0';
+            
+            const allocationValues = [
+                [0, 1, 0],
+                [2, 0, 0],
+                [3, 0, 3],
+                [2, 1, 1],
+                [0, 0, 2]
+            ];
+            
+            for (let i = 0; i < processes; i++) {
+                for (let j = 0; j < resources; j++) {
+                    document.getElementById(`allocation-${i}-${j}`).value = allocationValues[i][j];
+                }
+            }
+            
+            const requestValues = [
+                [0, 0, 0],
+                [2, 0, 2],
+                [0, 0, 0],
+                [1, 0, 0],
+                [0, 0, 2]
+            ];
+            
+            for (let i = 0; i < processes; i++) {
+                for (let j = 0; j < resources; j++) {
+                    document.getElementById(`request-${i}-${j}`).value = requestValues[i][j];
+                }
+            }
+        }
+
+        function clearData() {
+            document.getElementById('processes').value = '5';
+            document.getElementById('resources').value = '3';
+            initMatrices();
+        }
+
+        function detectDeadlock() {
+            const available = [];
+            for (let j = 0; j < resources; j++) {
+                available.push(parseInt(document.getElementById(`available-${j}`).value) || 0);
+            }
+            
+            const allocation = [];
+            for (let i = 0; i < processes; i++) {
+                const row = [];
+                for (let j = 0; j < resources; j++) {
+                    row.push(parseInt(document.getElementById(`allocation-${i}-${j}`).value) || 0);
+                }
+                allocation.push(row);
+            }
+            
+            const request = [];
+            for (let i = 0; i < processes; i++) {
+                const row = [];
+                for (let j = 0; j < resources; j++) {
+                    row.push(parseInt(document.getElementById(`request-${i}-${j}`).value) || 0);
+                }
+                request.push(row);
+            }
+            
+            const work = [...available];
+            const finish = new Array(processes).fill(false);
+            
+            // Initialize finish array - mark processes with zero allocation as finished
+            for (let i = 0; i < processes; i++) {
+                let allZero = true;
+                for (let j = 0; j < resources; j++) {
+                    if (allocation[i][j] !== 0) {
+                        allZero = false;
+                        break;
+                    }
+                }
+                finish[i] = allZero;
+            }
+            
+            let found;
+            do {
+                found = false;
+                for (let i = 0; i < processes; i++) {
+                    if (!finish[i]) {
+                        let canProceed = true;
+                        for (let j = 0; j < resources; j++) {
+                            if (request[i][j] > work[j]) {
+                                canProceed = false;
+                                break;
+                            }
+                        }
+                        
+                        if (canProceed) {
+                            // Add allocated resources of process i to work
+                            for (let j = 0; j < resources; j++) {
+                                work[j] += allocation[i][j];
+                            }
+                            finish[i] = true;
+                            found = true;
+                        }
+                    }
+                }
+            } while (found);
+            
+            const deadlockedProcesses = [];
+            for (let i = 0; i < processes; i++) {
+                if (!finish[i]) {
+                    deadlockedProcesses.push(i);
+                }
+            }
+            
+            const resultContainer = document.getElementById('result');
+            
+            if (deadlockedProcesses.length === 0) {
+                resultContainer.innerHTML = `<p class="success">No deadlock detected. System is in a safe state.</p>`;
+            } else {
+                resultContainer.innerHTML = `<p class="danger">Deadlock detected!</p>
+                                          <p>Deadlocked processes: ${deadlockedProcesses.map(p => `P${p}`).join(', ')}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
