@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File System Simulator</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Matching button styles from home page */
+        .action-btn {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .action-btn:hover {
+            background-color: #45a049;
+        }
+ 
+        #clearBtn {
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        #clearBtn:hover {
+            background-color: #f43939;
+        }
+
+        #generateBtn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        #generateBtn:hover {
+            background-color: #45a049;
+        }
+        
+        .command-group {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .command-group input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-left: 5px;
+            flex: 1;
+        }
+        
+        .command-history {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        
+        .history-box {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+            padding: 5px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        
+        .history-item {
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        
+        .command {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .error {
+            color: #f44336;
+        }
+        
+        .current-path {
+            background-color: #f0f8e8;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #d0e8c0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>File System Simulator</h1>
+        
+        <div class="input-section">
+            <div class="current-path">
+                <h3>Current Path: <span id="currentPath">/</span></h3>
+            </div>
+            
+            <h2>Command Panel</h2>
+            
+            <div class="command-buttons">
+                <div class="command-group">
+                    <button id="mkdirBtn" class="action-btn">mkdir</button>
+                    <input type="text" id="mkdirInput" placeholder="directory name">
+                </div>
+                
+                <div class="command-group">
+                    <button id="cdBtn" class="action-btn">cd</button>
+                    <input type="text" id="cdInput" placeholder="directory name">
+                </div>
+                
+                <div class="command-group">
+                    <button id="cdParentBtn" class="action-btn">cd ..</button>
+                </div>
+                
+                <div class="command-group">
+                    <button id="createBtn" class="action-btn">create</button>
+                    <input type="text" id="createInput" placeholder="file name">
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button id="generateBtn">Generate File Directory</button>
+                <button id="clearBtn">Reset System</button>
+            </div>
+            
+            <div class="command-history">
+                <h3>Command History</h3>
+                <div id="commandHistory" class="history-box"></div>
+            </div>
+        </div>
+        
+        <div class="output-section">
+            <h2>File Structure Output</h2>
+            <pre id="outputDisplay">Click "Generate File Directory" to see the file structure...</pre>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
