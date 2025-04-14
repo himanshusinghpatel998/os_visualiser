@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Memory Management Simulator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="styles.css" rel="stylesheet" />
+</head>
+<body>
+  <header>
+    <h1>Memory Management Simulator</h1>
+    <p>Choose a technique to simulate MFT, MVT or Demand Paging (Virtual Memory)</p>
+  </header>
+
+  <div class="main-container">
+    <div class="controls">
+      <select id="techniqueSelect">
+        <option value="mft">MFT (Multiprogramming with Fixed Tasks)</option>
+        <option value="mvt">MVT (Multiprogramming with Variable Tasks)</option>
+        <option value="paging">Demand Paging</option>
+      </select>
+
+      <button onclick="generateInputs()">Start Input</button>
+    </div>
+
+    <div id="inputContainer"></div>
+
+    <div class="center">
+      <button onclick="runSimulation()">Simulate</button>
+    </div>
+
+    <div id="outputContainer" class="output"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
