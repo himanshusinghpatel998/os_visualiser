@@ -98,7 +98,7 @@ Simulate file storage techniques:
 git clone https://github.com/himanshusinghpatel998/os_visualiser
 
 
-cd os-visualiser
+cd os_visualiser
 
 
 Run the Visualiser
@@ -121,13 +121,11 @@ Area	Technologies
 
 **Frontend :**   HTML5, CSS3, JavaScript
 
-**Animations :**	  D3.js / Canvas / SVG
-
 **Deployment :**	GitHub Pages / Netlify
 
 **Versioning:**  Git
 
-**language :**  python,c,cc++
+**language :**  python,c,c++
 
 
 

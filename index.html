@@ -79,8 +79,11 @@
       <div class="card"><i class="bi bi-gear-fill"></i><p>SYSTEM CALLS<br><small>Module 1</small></p></div>
       <div class="card" onclick="window.location.href='Bankers/home.html';">
         <i class="bi bi-exclamation-triangle-fill"></i><p>DEADLOCKS<br><small>Module 4</small></p> </div>
-      <div class="card"><i class="bi bi-arrow-left-right"></i><p>PAGE REPLACEMENT<br><small>Module 7</small></p></div>
-      <div class="card"><i class="bi bi-folder-fill"></i><p>HIERARCHICAL FILE ORG<br><small>Module 10</small></p></div>
+    <div class="card" onclick="window.location.href='Page_Replacement/index.html';">
+        <i class="bi bi-exclamation-triangle-fill"></i><p>PAGE REPLACEMENT<br><small>Module 7</small></p> </div>
+ 
+      <div class="card" onclick="window.location.href='file_org/home.html';">
+        <i class="bi bi-exclamation-triangle-fill"></i><p>HIERARCHICAL FILE ORG<br><small>Module 10</small></p> </div>
     </div>
 
     <div class="column">
@@ -100,15 +103,24 @@
         <i class="bi bi-lock-fill"></i><p>PROCESS SYNC<br><small>Module 3</small></p>
       </div>
 
+    <div class="card" onclick="window.location.href='Memory_Allocation/memory_allocation_home.html';">
+      <i class="bi bi-grid-fill"></i><p>CONTIGUOUS MEMORY<br><small>Module 6</small></p>
+    </div>
+      <div class="card" onclick="window.location.href='Disk_Scheduling/disk.html';">
+        <i class="bi bi-disc-fill"></i>
+        <p>DISK SCHEDULING<br><small>Module 8</small></p>
+      </div>
+
+      <div class="card" onclick="window.location.href='file_allocation/index.html';">
+        <i class="bi bi-folder2-open"></i>
+        <p>FILE ALLOCATION<br><small>Module 9</small></p>
+      </div>
       
-      <div class="card"><i class="bi bi-grid-fill"></i><p>CONTIGUOUS MEMORY<br><small>Module 6</small></p></div>
-      <div class="card"><i class="bi bi-disc-fill"></i><p>DISK SCHEDULING<br><small>Module 8</small></p></div>
-      <div class="card"><i class="bi bi-folder2-open"></i><p>FILE ALLOCATION<br><small>Module 9</small></p></div>
     </div>
   </div>
-<footer class="bg-blue-900 text-center text-white py-4 mt-10">
+<center></center><footer class="bg-blue-900 text-center text-white py-4 mt-10">
   OS Simulator · Made by Roll Numbers 231CS121-231CS130 & 201CS151
-</footer>
+</footer></center>
   <script>
     // Add click handlers to all cards
     document.querySelectorAll('.card').forEach(card => {

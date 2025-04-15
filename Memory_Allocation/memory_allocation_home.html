@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Allocation Algorithms Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: #4a55af;
+            color: white;
+            padding: 1.2rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 2rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        nav ul li a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .intro {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.2rem;
+            color: #2d3748;
+            font-weight: 700;
+            border-bottom: 2px solid #4a55af;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        .intro p {
+            margin-bottom: 1.2rem;
+            color: #444;
+            font-size: 1.05rem;
+        }
+        
+        .intro ul {
+            margin: 1.2rem 0 1.5rem 1.5rem;
+        }
+        
+        .intro li {
+            margin-bottom: 0.7rem;
+            color: #444;
+        }
+        
+        .intro strong {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .section-divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 1.5rem 0;
+        }
+        
+        .algorithm-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .algorithm-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .algorithm-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background-color: #4a55af;
+            color: white;
+            padding: 1.5rem;
+            font-weight: 600;
+            font-size: 1.3rem;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8fafc;
+        }
+        
+        .card-body p {
+            color: #4a5568;
+            font-size: 1.05rem;
+            text-align: center;
+            line-height: 1.5;
+            padding: 0 0.5rem;
+        }
+        
+        .card-footer {
+            padding: 1.5rem;
+            text-align: center;
+            background-color: white;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #4a55af;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(74, 85, 175, 0.3);
+        }
+        
+        .btn:hover {
+            background-color: #3a4499;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 85, 175, 0.4);
+        }
+        
+        footer {
+            background-color: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 1.2rem 0;
+            margin-top: 3rem;
+        }
+        
+        footer p {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="title">MEMORY ALLOCATION VISUALIZER</div>
+        <nav>
+            <ul>
+                <li><a href="#">HOME</a></li>
+                <li><a href="#">ABOUT</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="intro">
+            <h1>Memory Allocation Algorithms</h1>
+            
+            <p>Memory allocation is a fundamental aspect of operating systems that manages the assignment of physical or virtual memory space to programs and processes. When applications run, they require memory for storing data, instructions, and resources. The operating system must efficiently allocate this limited resource to maximize system performance and utilization.</p>
+            
+            <div class="section-divider"></div>
+            
+            <p><strong>Why Memory Allocation Matters:</strong></p>
+            <ul>
+                <li><strong>Resource Utilization:</strong> Memory is a finite resource, and proper allocation ensures optimal use of available memory.</li>
+                <li><strong>Process Execution:</strong> Programs need memory to load and execute; without proper allocation, processes would fail to run.</li>
+                <li><strong>Multitasking:</strong> Modern operating systems run multiple processes simultaneously, requiring balanced memory distribution.</li>
+                <li><strong>System Performance:</strong> Efficient memory allocation directly impacts system responsiveness and overall performance.</li>
+                <li><strong>Fragmentation Prevention:</strong> Well-designed allocation algorithms minimize memory fragmentation, which can waste available space.</li>
+            </ul>
+            
+            <div class="section-divider"></div>
+            
+            <p>Different memory allocation algorithms employ various strategies to assign memory blocks to processes. Each algorithm has its own approach to handling allocation requests, with different trade-offs in terms of speed, efficiency, and memory utilization.</p>
+            
+            <p>This simulator provides interactive visualizations of the most common memory allocation algorithms to help understand their behavior, strengths, and limitations in real-time scenarios.</p>
+        </div>
+        
+        <div class="algorithm-grid">
+            <div class="algorithm-card">
+                <div class="card-header">FIRST FIT ALGORITHM</div>
+                <div class="card-body">
+                    <p>Allocates memory to the first available block that is large enough to accommodate the process.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="first_fit.html" class="btn">Simulate</a>
+                </div>
+            </div>
+            
+            <div class="algorithm-card">
+                <div class="card-header">BEST FIT ALGORITHM</div>
+                <div class="card-body">
+                    <p>Allocates memory to the smallest available block that can fit the requesting process.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="best_fit.html" class="btn">Simulate</a>
+                </div>
+            </div>
+            
+            <div class="algorithm-card">
+                <div class="card-header">WORST FIT ALGORITHM</div>
+                <div class="card-body">
+                    <p>Allocates memory to the largest available block among all available memory blocks.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="worst_fit.html" class="btn">Simulate</a>
+                </div>
+            </div>
+            
+            <div class="algorithm-card">
+                <div class="card-header">NEXT FIT ALGORITHM</div>
+                <div class="card-body">
+                    <p>Similar to First Fit, but starts searching from the last allocated position rather than the beginning.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="next_fit.html" class="btn">Simulate</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Memory Allocation Algorithms Simulator &copy; 2025</p>
+    </footer>
+</body>
+</html>
