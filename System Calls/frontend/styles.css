@@ -1,0 +1,75 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #003984;
+  color: #000;
+}
+
+header {
+  background: linear-gradient(135deg, #003984, #0052cc);
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.main-container {
+  padding: 20px;
+  max-width: 850px;
+  margin: 30px auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.controls, .center {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.select-box {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.select-box:hover {
+  border-color: #007bff;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background: linear-gradient(to right, #007bff, #00c6ff);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+.btn.secondary {
+  background: linear-gradient(to right, #ff6a00, #ee0979);
+}
+
+.output {
+  white-space: pre-line;
+  background: #f0f0f0;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+}
